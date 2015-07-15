@@ -1,0 +1,18 @@
+{
+	"name": null,
+
+	"template": false,
+	"save_log": false,
+	"display_errors": false,
+
+	"auth": false,
+	"auth_class": "",
+	"auth_controller": "",
+	"auth_action": "",
+
+	"not_found_controller": "",
+
+	"url_get_map": {},
+	"template_map": {},
+	"not_auth": []
+}
