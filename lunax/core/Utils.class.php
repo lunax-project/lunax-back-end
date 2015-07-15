@@ -53,8 +53,10 @@ class Utils
         if ($GLOBALS['app']->getConfig('display_errors')) {
             self::log("ERROR: $message");
             echo self::escape($message);
-            if ($break) exit;
         }
+
+        # Force application break
+        if ($break) exit;
     }
 
     /**
@@ -132,6 +134,8 @@ class Utils
 
             # Get contents of buffer
             return ob_get_clean();
+        } else {
+            self::error("File \"$filename\" not found!");
         }
     }
 
@@ -165,6 +169,8 @@ class Utils
     {
         # Redirect browser
         header("Location: $url");
+
+        self::log("Location to $url");
 
         # Make sure that code below does not
         # get executed when we redirect.

@@ -57,12 +57,21 @@ abstract class Model
     {
         $qPdo = $this->__PDO->prepare($query);
 
+        $param = json_decode($this->param);
+        $message = ("Query: $query" . PHP_EOL ."Param: $param");
+
         if (!$qPdo->execute($this->param)) {
-            # error
+            Utils::log("
+                $message
+                Success!
+            ");
         }
 
         else {
-            # success
+            Utils::log("
+                $message
+                Error!
+            ");
         }
 
         $this->reset();
@@ -105,13 +114,25 @@ abstract class Model
                 $contWhere = trim($where[1]);
 
                 # foo LIKE ? para `foo` LIKE ?
-                $contWhere = preg_replace($baseRegex . "(\?|[+\-\s])$/", '(`$1` $2 $3)', $contWhere);
+                $contWhere = preg_replace(
+                    $baseRegex . "(\?|[+\-\s])$/",
+                    '(`$1` $2 $3)',
+                    $contWhere
+                );
 
                 # foo LIKE bar para `foo` like `bar`
-                $contWhere = preg_replace($baseRegex . "([\w\"']+)$/", '(`$1` $2 `$3`)', $contWhere);
+                $contWhere = preg_replace(
+                    $baseRegex . "([\w\"']+)$/",
+                    '(`$1` $2 `$3`)',
+                    $contWhere
+                );
 
                 # Converte foo.bar em `foo`.`bar`
-                $strWhere .= preg_replace("/(\w+)\.(\w+)/", '`$1`.`$2`', $contWhere);
+                $strWhere .= preg_replace(
+                    "/(\w+)\.(\w+)/",
+                    '`$1`.`$2`',
+                    $contWhere
+                );
             }
 
             # Insere os valores no fom dos parâmetros
@@ -119,8 +140,13 @@ abstract class Model
                 array_push($this->param, $value);
             }
 
-            return ' WHERE ' . (count($this->dataWhere) > 1 ? "($strWhere)" : $strWhere);
-        } else return " WHERE 1";
+            return ' WHERE ' . (
+                count($this->dataWhere) > 1 ?
+                "($strWhere)" : $strWhere
+            );
+        } else {
+            return " WHERE 1";
+        }
     }
 
     private function makeDestinct()
@@ -131,11 +157,20 @@ abstract class Model
     private function makeOrderBy()
     {
         if (count($this->_selectOrderBy)) {
+
             foreach ($this->_selectOrderBy as $i => $order) {
-                $this->_selectOrderBy[$i] = preg_replace('/^([^*]\w*)$/', '`$1`', trim($order));
+                $this->_selectOrderBy[$i] = preg_replace(
+                    '/^([^*]\w*)$/',
+                    '`$1`',
+                    trim($order)
+                );
             }
+
             $orderStr = join($this->_selectOrderBy , ', ');
-            $this->_selectOrderType = !empty($this->_selectOrderType) ? $this->_selectOrderType : 'ASC';
+
+            $this->_selectOrderType = !empty($this->_selectOrderType) ?
+                $this->_selectOrderType : 'ASC';
+
             return " ORDER BY $orderStr $this->_selectOrderType";
         } else return '';
     }
@@ -204,7 +239,9 @@ abstract class Model
         }
 
         $strColumns =  join($insert, ', ');
-        $this->execute("INSERT INTO `$this->table` ($strColumns) VALUES ($strValues)");
+        $this->execute(
+            "INSERT INTO `$this->table` ($strColumns) VALUES ($strValues)"
+        );
         return $this->__PDO->lastInsertId();
     }
 
@@ -229,17 +266,25 @@ abstract class Model
             }
         }
 
-        $this->execute("UPDATE `$this->table` SET $strUpdate " . $this->makeWhere());
+        $this->execute(
+            "UPDATE `$this->table` SET $strUpdate " . $this->makeWhere()
+        );
     }
 
     public function increment($col, $value)
     {
-        $this->execute("UPDATE `$this->table` SET `$col` = `$col` + $value" . $this->makeWhere());
+        $this->execute(
+            "UPDATE `$this->table` SET `$col` = `$col` + $value" .
+            $this->makeWhere()
+        );
     }
 
     public function decrement($col, $value)
     {
-        $this->execute("UPDATE `$this->table` SET `$col` = `$col` - $value" . $this->makeWhere());
+        $this->execute(
+            "UPDATE `$this->table` SET `$col` = `$col` - $value" .
+            $this->makeWhere()
+        );
     }
 
     # $this->delete(1);
@@ -257,18 +302,32 @@ abstract class Model
         foreach ($columns as $i => $data) {
 
             # a -> `a` ignorando o * de todos
-            $columns[$i] = preg_replace('/^([^*]\w*)$/', '`$1`', trim($data));
+            $columns[$i] = preg_replace(
+                '/^([^*]\w*)$/',
+                '`$1`',
+                trim($data));
 
             # a.a -> `a`.`a`
-            $columns[$i] = preg_replace('/(\w*)\.(\w*)/', '`$1`.`$2`', $columns[$i]);
+            $columns[$i] = preg_replace(
+                '/(\w*)\.(\w*)/',
+                '`$1`.`$2`',
+                $columns[$i]);
 
             # a(b) -> a(`b`)
-            $columns[$i] = preg_replace('/(\b[^()]+)\((.*)\)/', '$1(`$2`)', $columns[$i]);
+            $columns[$i] = preg_replace(
+                '/(\b[^()]+)\((.*)\)/',
+                '$1(`$2`)',
+                $columns[$i]
+            );
 
             # a as a -> `a` as `a`
             # a a -> `a` `a`
             # a + a -> `a` + `a`
-            $columns[$i] = preg_replace('/^\s*(\w+)(?:\s*([-+*\/]|AS)\s*((?:\s[-+])?\w+)\s*)+$/i', '`$1` $2 `$3`', $columns[$i]);
+            $columns[$i] = preg_replace(
+                '/^\s*(\w+)(?:\s*([-+*\/]|AS)\s*((?:\s[-+])?\w+)\s*)+$/i',
+                '`$1` $2 `$3`',
+                $columns[$i]
+            );
 
         }
         $this->_selectCols = join($columns, ', ');
@@ -283,9 +342,19 @@ abstract class Model
     {
         $table = func_get_args();
         foreach ($table as $i => $tb) {
-            $table[$i] = preg_replace('/^(\w*)$/', '`$1`', trim($tb));
-            $table[$i] = preg_replace('/^(\w*)\s(\w*)$/', '`$1` `$2`', $table[$i]);
+            $table[$i] = preg_replace(
+                '/^(\w*)$/',
+                '`$1`',
+                trim($tb)
+            );
+
+            $table[$i] = preg_replace(
+                '/^(\w*)\s(\w*)$/',
+                '`$1` `$2`',
+                $table[$i]
+            );
         }
+
         $this->_selectFrom = join($table, ', ');
     }
 

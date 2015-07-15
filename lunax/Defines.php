@@ -21,5 +21,8 @@ $lunaxClasses = [
 	'Bootstrap'
 ];
 
+# Lunax files
 define('LUNAXDIR', ROOT . DS . 'lunax');
+
+# Application files
 define('APPDIR', ROOT . DS . 'app');

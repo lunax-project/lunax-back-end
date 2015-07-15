@@ -7,6 +7,9 @@ class Bootstrap
     private $action;
     private $configs;
 
+    /**
+     * Load configurations file by directory root
+     */
     private function loadConfigFile($dir)
     {
         $fullFileName = implode(DS, [
@@ -22,6 +25,9 @@ class Bootstrap
         }
     }
 
+    /**
+     * Extends last configurations
+     */
     private function extendsConfigs($newConfigs)
     {
         foreach ($newConfigs as $name => $value) {
@@ -29,6 +35,9 @@ class Bootstrap
         }
     }
 
+    /**
+     * Get the value of application by name of configuration
+     */
     public function getConfig($name) {
         if (array_key_exists($name, $this->configs)) {
             return $this->configs->$name;
@@ -37,12 +46,19 @@ class Bootstrap
         }
     }
 
+    /**
+     * Set a new value to application config
+     */
     public function setConfig($name, $value) {
         if (array_key_exists($name, $this->configs)) {
             $this->configs->$name = $value;
         }
     }
 
+    /**
+     * Load application controller
+     * @return Boolean  true if success
+     */
     private function loadController()
     {
         $controllerName = $this->request->getControllerName();
@@ -69,16 +85,27 @@ class Bootstrap
         return false;
     }
 
+    /**
+     * Load page action
+     */
     private function loadAction()
     {
         $actionName = $this->request->getActionName();
         if (method_exists($this->controller, $actionName)) {
             $this->controller->$actionName();
+            Utils::log("Action loaded!");
+            return true;
         } else {
             $this->controller->$actionName();
+            Utils::log("Action not found!");
+            return false;
         }
     }
 
+    /**
+     * Make a name to view
+     * @return String
+     */
     private function makeViewName()
     {
         return implode(DS, [
@@ -87,13 +114,19 @@ class Bootstrap
         ]);
     }
 
+    /**
+     * Load page template
+     */
     private function loadTemplate()
     {
         $view = $this->makeViewName();
         $controller = $this->request->getController();
         $templateMap = $this->getConfig('template_map');
+
+        # Template name default
         $templateName = 'default';
 
+        # Verify template map to make template name
         if (isset($templateMap->$controller)) {
             $templateName = $templateMap->$controller;
         }
@@ -103,8 +136,13 @@ class Bootstrap
             $this->makeViewName(),
             $this->controller->view
         );
+
+        Utils::log("Template loaded!");
     }
 
+    /**
+     * Load page view
+     */
     private function loadView()
     {
         $view = new View(
@@ -113,6 +151,9 @@ class Bootstrap
         );
     }
 
+    /**
+     * Action if controller is not loaded
+     */
     private function setNotLoaded()
     {
         $this->request->setController(
@@ -122,10 +163,15 @@ class Bootstrap
         if ($this->loadController()) {
             $this->loadAction();
         } else {
-            Utils::error("Controller not found!");
+            Utils::error("Fatal error on load controller!");
         }
+
+        Utils::log("Controller not found!");
     }
 
+    /**
+     * Prepare a autoload of models
+     */
     private function autoLoadModels()
     {
 
@@ -161,8 +207,12 @@ class Bootstrap
         spl_autoload_register('autoload');
     }
 
+    /**
+     * Load configurations of application
+     */
     private function loadConfigs()
     {
+        # Default configurations
         $defaultConfigs = (object)[
             'name'                  => null,
             'auth'                  => false,
@@ -202,6 +252,9 @@ class Bootstrap
         return true;
     }
 
+    /**
+     * Run application
+     */
     public function run()
     {
         $defaultUrlName = $this->request->getDefaultUrlName();
@@ -211,6 +264,7 @@ class Bootstrap
 
         # Testing auth
         if ($this->checkAuth()) {
+
             # Run the controller
             if ($this->loadController()) {
                 $this->loadAction();

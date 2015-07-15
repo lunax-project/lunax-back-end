@@ -5,16 +5,23 @@ class Template
     private $view;
     private $viewName;
 
+    /**
+     * Include content of template
+     */
     public function content() {
         $filename = implode(DS, [APPDIR, 'views', "$this->viewName.phtml"]);
 
         if (file_exists($filename)) {
             include_once $filename;
+            Utils::log("View file \"$filename\" readed!");
         } else {
-            Utils::error("View $this->viewName not found!");
+            Utils::error("View file \"$this->viewName\" not found!");
         }
     }
 
+    /**
+     * Make applications onePage
+     */
     public function onePage($subTemplate, $views = null) {
         # onePage([...]);
         if (gettype($subTemplate) == 'array') {
@@ -54,14 +61,16 @@ class Template
             "$name.phtml"
         ]);
 
+        # Setting data of controller to template/view
         foreach ($dataView as $key => $value) {
             $this->$key = $value;
         }
 
         if (file_exists($filename)) {
             require_once $filename;
+            Utils::log("Layout file \"$filename\" readed!");
         } else {
-            Utils::error('Layout not found!');
+            Utils::error("Layout file \"$filename\" not found!");
         }
     }
 }

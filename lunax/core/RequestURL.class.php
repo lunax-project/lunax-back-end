@@ -294,8 +294,10 @@ class RequestURL
 
 	private function getUrlName($index)
 	{
-		return (isset($this->partsRequest[$index]) && !empty($this->partsRequest[$index])) ?
-			$this->partsRequest[$index] : $this->defaultUrlName;
+		return (
+			isset($this->partsRequest[$index]) &&
+			!empty($this->partsRequest[$index])
+		) ? $this->partsRequest[$index] : $this->defaultUrlName;
 	}
 
 	/**
@@ -320,11 +322,22 @@ class RequestURL
 
 	public function __construct($urlMap = [])
 	{
+		$regexServerRoot = '/(.*)\/index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
 		$this->setDefaultUrlName('index');
 		$this->setFullRequest(parse_url($uri)['path']);
-		$this->setServerRoot(preg_replace('/(.*)\/index\.php$/',  '$1', $_SERVER['SCRIPT_NAME']));
-		$this->setAbsoluteUrl('http' . ($this->isSecure() ? 's' : '') .  '://' . $_SERVER['SERVER_NAME']);
+
+		$this->setServerRoot(preg_replace(
+			$regexServerRoot,
+			'$1',
+			$_SERVER['SCRIPT_NAME']
+		));
+
+		$this->setAbsoluteUrl(
+			'http' . ($this->isSecure() ? 's' : '') .
+			'://' . $_SERVER['SERVER_NAME']
+		);
+
 		$this->partsRequest = $this->getPartsRequest();
 		$this->setUrlMap($urlMap);
 		$this->setController($this->getUrlName(0));
