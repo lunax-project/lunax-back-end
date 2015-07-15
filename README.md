@@ -1,4 +1,4 @@
-Lunax Framework Aplha 2.0
+Lunax Framework Alpha 2.0
 ===================
 
 Um framework de php orientado a objetos com mvc baseado em restful para pequenas aplicações Suporte PHP `5.3+`.
