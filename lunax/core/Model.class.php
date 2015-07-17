@@ -2,7 +2,7 @@
 
 abstract class Model
 {
-    # Cópia local do pdo
+    # Local copy of PDO class
     private $__PDO;
 
     # Vars SELECT
@@ -20,7 +20,7 @@ abstract class Model
     private $paramWhere = array();
     private $param = array();
 
-    # Volta para os valores default
+    # Reset defaults values
     private function reset()
     {
         $_selectCols = '*';
@@ -35,11 +35,17 @@ abstract class Model
         $this->param = array();
     }
 
+    /**
+     * Get configurations of file by direcory
+     */
     private function getFileConfigDB($dir) {
         $filename = join(array($dir, 'configs', 'database.json'), DS);
         return file_exists($filename) ? $filename : false;
     }
 
+    /**
+     * Get configurations of database
+     */
     private function getConfigDB()
     {
         if (!$fileConfigs = $this->getFileConfigDB(APPDIR)) {
@@ -63,14 +69,14 @@ abstract class Model
         if (!$qPdo->execute($this->param)) {
             Utils::log("
                 $message
-                Success!
+                Status: Success!
             ");
         }
 
         else {
             Utils::log("
                 $message
-                Error!
+                Status: Error!
             ");
         }
 

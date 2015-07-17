@@ -72,7 +72,9 @@ class Bootstrap
         if (file_exists($controllerFile)) {
             require_once $controllerFile;
             if (class_exists($controllerName)) {
-                $this->controller = new $controllerName($this->request->getParameters());
+                $this->controller = new $controllerName(
+                    $this->request->getParameters()
+                );
 
                 if (method_exists($this->controller, 'beforeAction')) {
                     $this->controller->beforeAction();
@@ -96,8 +98,7 @@ class Bootstrap
             Utils::log("Action loaded!");
             return true;
         } else {
-            $this->controller->$actionName();
-            Utils::log("Action not found!");
+            Utils::error("Action not found!", true);
             return false;
         }
     }
@@ -136,8 +137,6 @@ class Bootstrap
             $this->makeViewName(),
             $this->controller->view
         );
-
-        Utils::log("Template loaded!");
     }
 
     /**
@@ -163,7 +162,7 @@ class Bootstrap
         if ($this->loadController()) {
             $this->loadAction();
         } else {
-            Utils::error("Fatal error on load controller!");
+            Utils::error("Fatal error on load controller!", true);
         }
 
         Utils::log("Controller not found!");
@@ -174,7 +173,7 @@ class Bootstrap
      */
     private function autoLoadModels()
     {
-
+        # Load model file
         function loadFile($dir, $fileName)
         {
             $fileName = implode(DS, [$dir, 'models', $fileName]);
@@ -238,14 +237,20 @@ class Bootstrap
         $this->extendsConfigs($this->loadConfigFile(APPDIR));
     }
 
+    /**
+     * Check application have auth to continue
+     */
     private function checkAuth()
     {
         $controller = $this->request->getController();
         $allowAuth = $this->getConfig('not_auth');
 
+        # Check auth config and auth allow
         if ($this->getConfig('auth') && !in_array($controller, $allowAuth)) {
             $authClass = $this->getConfig('auth_class');
             $auth = new $authClass;
+
+            # Check is auth in the class
             return (method_exists($auth, 'isAuth') && $auth->isAuth());
         }
 
@@ -270,8 +275,11 @@ class Bootstrap
                 $this->loadAction();
             }
 
+            # Check url map default controller
             elseif ($this->request->getUrlMap($defaultUrlName)) {
                 $this->request->setController($defaultUrlName);
+
+                # Load url map default
                 if ($this->loadController()) {
                     $this->loadAction();
                 } else {
@@ -304,6 +312,7 @@ class Bootstrap
             $this->loadView();
         }
 
+        # Run after action
         if (method_exists($this->controller, 'afterAction')) {
             $this->controller->afterAction();
         }
