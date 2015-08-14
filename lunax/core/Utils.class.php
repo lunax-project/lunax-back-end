@@ -176,4 +176,25 @@ class Utils
         # get executed when we redirect.
         exit;
     }
+
+    /**
+     * Get data using method post
+     * @param  String $url  URL to send post
+     * @param  Array  $data Data of param
+     * @return Mixed        Result of post
+     */
+    public function post($url, $data = null)
+    {
+        $cURL = curl_init($url);
+        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($cURL, CURLOPT_POST, TRUE);
+
+        if (!is_null($data)) {
+            curl_setopt($cURL, CURLOPT_POSTFIELDS, $data);
+        }
+
+        $result = curl_exec($cURL);
+        curl_close($cURL);
+        return simplexml_load_string($result);
+    }
 }

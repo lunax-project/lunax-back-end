@@ -184,7 +184,7 @@ O nome da ação é baseado na segunda parte da url, ou seja, quando se acessa `
 
 Para criar um controller é necessário criar um arquivo com a seguinte estrutura: **ClassName**Controller.class.php Esse arquivo deve ficar dentro da pasta *controllers* no diretório da aplicação. Esta classe pode extender `Controller` para que funcione corretamente. A estrutura da classe é a seguinte:
 
-**Arquivo:** `_app/controller/FooController.class.php`
+**Arquivo:** `app/controller/FooController.class.php`
 
 ````php
 
