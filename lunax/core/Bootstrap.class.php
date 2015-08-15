@@ -162,10 +162,10 @@ class Bootstrap
         if ($this->loadController()) {
             $this->loadAction();
         } else {
-            Utils::error("Fatal error on load controller!", true);
+            Utils::error('Fatal error on load controller!', true);
         }
 
-        Utils::log("Controller not found!");
+        Utils::log('Controller not found!');
     }
 
     /**

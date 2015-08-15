@@ -63,7 +63,7 @@ abstract class Model
     {
         $qPdo = $this->__PDO->prepare($query);
 
-        $param = json_decode($this->param);
+        $param = json_encode($this->param);
         $message = ("Query: $query" . PHP_EOL ."Param: $param");
 
         if (!$qPdo->execute($this->param)) {

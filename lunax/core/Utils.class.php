@@ -48,7 +48,7 @@ class Utils
      * @param  String  $message Message to display
      * @param  boolean $break   break page if is true
      */
-    public static function error(string $message, $break = false)
+    public static function error($message, $break = false)
     {
         if ($GLOBALS['app']->getConfig('display_errors')) {
             self::log("ERROR: $message");
