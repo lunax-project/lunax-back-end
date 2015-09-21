@@ -2,6 +2,8 @@
 
 # Super directory
 define('ROOT', dirname(__FILE__));
+
+# Less directory separator name
 define('DS', DIRECTORY_SEPARATOR);
 
 # Lunax files
@@ -10,15 +12,8 @@ define('LUNAXDIR', ROOT . DS . 'lunax');
 # Application files
 define('APPDIR', ROOT . DS . 'app');
 
-# Include lunax definitions
-require_once implode(DS, [
-	LUNAXDIR,
-	'Defines.php'
-]);
-
 /**
- * Para segurança de sua aplicação não remova as classes
- * As classes do lunax são:
+ * The lunax clases:
  *   + Utils,
  *   + RequestURL,
  *   + Model,
