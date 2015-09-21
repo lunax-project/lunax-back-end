@@ -22,6 +22,7 @@ class RequestURL
 	private $partsRequest;
 	private $defaultUrlName;
 
+	private $use_restful;
 	private $urlMap;
 
 	private $controller;
@@ -182,8 +183,9 @@ class RequestURL
 	public function setAction($action)
 	{
 		$this->action = $action;
+
 		$this->setActionName(lcfirst($this->makeRequestName(
-			$_SERVER['REQUEST_METHOD'],
+			$this->use_restful ? $_SERVER['REQUEST_METHOD'] : '',
 			$action,
 			'action'
 		)));
@@ -224,6 +226,10 @@ class RequestURL
 
 	# -------------------------------------------
 
+	/**
+	 * Replace accents to equivalent letters
+	 * @return string
+	 */
 	private function replaceAccents($string)
 	{
 		$search = explode(',',
@@ -250,11 +256,7 @@ class RequestURL
 
 	private function makeRequestName($before, $name, $after)
 	{
-		return $this->camelCase(implode(' ', [
-			$before,
-			$name,
-			$after
-		]));
+		return $this->camelCase(implode(' ', [$before, $name, $after]));
 	}
 
 	public function getRequest()
@@ -292,6 +294,9 @@ class RequestURL
 		return $parameters;
 	}
 
+	/**
+	 * Get the URL name by index
+	 */
 	private function getUrlName($index)
 	{
 		return (
@@ -322,7 +327,7 @@ class RequestURL
 
 	public function __construct($urlMap = [])
 	{
-		$regexServerRoot = '/(.*)\/index\.php$/';
+		$regexServerRoot = '/(.*)[\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
 		$this->setDefaultUrlName('index');
 		$this->setFullRequest(parse_url($uri)['path']);
@@ -334,6 +339,7 @@ class RequestURL
 		));
 
 		$this->setAbsoluteUrl(
+			# http or https
 			'http' . ($this->isSecure() ? 's' : '') .
 			'://' . $_SERVER['SERVER_NAME']
 		);

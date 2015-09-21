@@ -72,7 +72,7 @@ class Utils
             $remoteAddr     = $_SERVER['REMOTE_ADDR'];
 
             # A ordem ano-mês-dia serve para organizar ficar mais fácil de localizar
-            $filename = join(array(APPDIR, 'log', '$date.log'), DS);
+            $filename = implode(array(APPDIR, 'log', '$date.log'), DS);
 
             # Prepare data to make log
             $dataLog = "[$time] - $remoteAddr:" . PHP_EOL;

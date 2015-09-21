@@ -39,7 +39,7 @@ abstract class Model
      * Get configurations of file by direcory
      */
     private function getFileConfigDB($dir) {
-        $filename = join(array($dir, 'configs', 'database.json'), DS);
+        $filename = implode(array($dir, 'configs', 'database.json'), DS);
         return file_exists($filename) ? $filename : false;
     }
 
@@ -172,7 +172,7 @@ abstract class Model
                 );
             }
 
-            $orderStr = join($this->_selectOrderBy , ', ');
+            $orderStr = implode($this->_selectOrderBy , ', ');
 
             $this->_selectOrderType = !empty($this->_selectOrderType) ?
                 $this->_selectOrderType : 'ASC';
@@ -244,7 +244,7 @@ abstract class Model
             }
         }
 
-        $strColumns =  join($insert, ', ');
+        $strColumns =  implode($insert, ', ');
         $this->execute(
             "INSERT INTO `$this->table` ($strColumns) VALUES ($strValues)"
         );
@@ -336,7 +336,7 @@ abstract class Model
             );
 
         }
-        $this->_selectCols = join($columns, ', ');
+        $this->_selectCols = implode($columns, ', ');
     }
 
     public function distinct($val = true)
@@ -361,7 +361,7 @@ abstract class Model
             );
         }
 
-        $this->_selectFrom = join($table, ', ');
+        $this->_selectFrom = implode($table, ', ');
     }
 
     public function orderAsc($col)
