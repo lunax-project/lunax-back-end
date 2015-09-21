@@ -22,7 +22,9 @@ class RequestURL
 	private $partsRequest;
 	private $defaultUrlName;
 
-	private $use_restful;
+	# Boolean: true if using restful on application
+	private $usingRestful;
+
 	private $urlMap;
 
 	private $controller;
@@ -67,6 +69,19 @@ class RequestURL
 	{
 		return isset($this->urlMap->$name) ?
 			$this->urlMap->$name : false;
+	}
+
+	# -------------------------------------------
+
+	private function setUseRestful($usingRestful)
+	{
+		$this->usingRestful = $usingRestful;
+		return $this;
+	}
+
+	public function getUseRestful()
+	{
+		return $this->usingRestful;
 	}
 
 	# -------------------------------------------
@@ -185,7 +200,7 @@ class RequestURL
 		$this->action = $action;
 
 		$this->setActionName(lcfirst($this->makeRequestName(
-			$this->use_restful ? $_SERVER['REQUEST_METHOD'] : '',
+			$this->getUseRestful() ? $_SERVER['REQUEST_METHOD'] : '',
 			$action,
 			'action'
 		)));
@@ -327,7 +342,7 @@ class RequestURL
 
 	public function __construct($urlMap = [])
 	{
-		$regexServerRoot = '/(.*)[\\\/]index\.php$/';
+		$regexServerRoot = '/(.*)[\\\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
 		$this->setDefaultUrlName('index');
 		$this->setFullRequest(parse_url($uri)['path']);

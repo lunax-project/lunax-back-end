@@ -224,6 +224,7 @@ class Bootstrap
             'auth_action'           => '',
             'template_map'          => new StdClass,
             'url_map'               => new StdClass,
+            'use_restful'           => true,
             'not_auth'              => []
         ];
 
@@ -262,6 +263,9 @@ class Bootstrap
      */
     public function run()
     {
+        # Save if is a restful application
+        $this->request->setUseRestful($this->getConfig('use_restful'));
+
         $defaultUrlName = $this->request->getDefaultUrlName();
 
         # Start autoload models

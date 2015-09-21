@@ -36,6 +36,9 @@ Abaixo segue o conteúdo em application.json:
   // A página terá um template ou será baseada nos views
   "template": true,
 
+  // A aplicação irá usar os métodos http para formar a url
+  "use_restful": true,
+
   // Nome do controller se não encontrar
   "not_found_controller": "not_found",
 

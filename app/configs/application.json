@@ -13,6 +13,7 @@
 	"not_found_controller": "",
 
 	"url_get_map": {},
+	"use_restful": true,
 	"template_map": {},
 	"not_auth": []
 }
