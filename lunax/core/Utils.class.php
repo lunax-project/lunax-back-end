@@ -23,7 +23,7 @@ class Utils
     }
 
     /**
-     * Substitue os caracteres especiais do HTML
+     * Replace special characters of html
      * @param  String $str
      * @return String
      */
@@ -33,8 +33,7 @@ class Utils
     }
 
     /**
-     * Substitue os caracteres especiais, mais
-     * permite a quebra de linha
+     * Replace special characters and convert new lines to <br>
      * @param  String $str
      * @return String
      */
@@ -71,8 +70,8 @@ class Utils
             $date           = date("Y-m-d");
             $remoteAddr     = $_SERVER['REMOTE_ADDR'];
 
-            # A ordem ano-mês-dia serve para organizar ficar mais fácil de localizar
-            $filename = implode(array(APPDIR, 'log', '$date.log'), DS);
+            # Prepare filename to save
+            $filename = implode([APPDIR, 'log', "$date.log"], DS);
 
             # Prepare data to make log
             $dataLog = "[$time] - $remoteAddr:" . PHP_EOL;
@@ -97,7 +96,7 @@ class Utils
         $appRequest = $GLOBALS['app']->request;
         $serverRoot     = preg_replace('/^(\/|\\\)/', '', $appRequest->getServerRoot());
         $parts          = array_filter(explode($separator, $url), 'strlen');
-        $absolutes      = array($appRequest->getAbsoluteUrl());
+        $absolutes      = [$appRequest->getAbsoluteUrl()];
 
         # Caso não esteja na raiz adiciona o diretório
         if (!empty($serverRoot)) {

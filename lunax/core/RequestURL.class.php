@@ -7,6 +7,7 @@
  * Request:              $request->getRequest();
  * Default url name:     $request->getDefaultUrlName();
  * Url map:              $request->getUrlMap();
+ * Use restful:          $request->setUseRestful();
  * Controller:           $request->getController();
  * Controller name:      $request->getControllerName();
  * Action:               $request->getAction();
@@ -73,7 +74,7 @@ class RequestURL
 
 	# -------------------------------------------
 
-	private function setUseRestful($usingRestful)
+	public function setUseRestful($usingRestful)
 	{
 		$this->usingRestful = $usingRestful;
 		return $this;
@@ -340,7 +341,7 @@ class RequestURL
 					|| $_SERVER['SERVER_PORT'] == 443;
 	}
 
-	public function __construct($urlMap = [])
+	public function __construct($urlMap = [], $useRestful = true)
 	{
 		$regexServerRoot = '/(.*)[\\\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
@@ -361,6 +362,11 @@ class RequestURL
 
 		$this->partsRequest = $this->getPartsRequest();
 		$this->setUrlMap($urlMap);
+
+		# Save if is a restful application
+        $this->setUseRestful($useRestful);
+
+		# Set controller
 		$this->setController($this->getUrlName(0));
 	}
 }

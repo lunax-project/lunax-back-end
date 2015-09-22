@@ -80,10 +80,12 @@ class Bootstrap
                     $this->controller->beforeAction();
                 }
 
+                Utils::log("Controller \"$controllerName\" loaded!");
                 return true;
             }
         }
 
+        Utils::Error("Controller \"$controllerName\" not loaded!", true);
         return false;
     }
 
@@ -93,12 +95,13 @@ class Bootstrap
     private function loadAction()
     {
         $actionName = $this->request->getActionName();
+
         if (method_exists($this->controller, $actionName)) {
             $this->controller->$actionName();
-            Utils::log("Action loaded!");
+            Utils::log("Action \"$actionName\" loaded!");
             return true;
         } else {
-            Utils::error("Action not found!", true);
+            Utils::error("Action \"$actionName\" not found!", true);
             return false;
         }
     }
@@ -146,7 +149,7 @@ class Bootstrap
     {
         $view = new View(
             $this->makeViewName(),
-            $this->controller->view
+            isset($this->controller->view) ? $this->controller->view : []
         );
     }
 
@@ -164,8 +167,6 @@ class Bootstrap
         } else {
             Utils::error('Fatal error on load controller!', true);
         }
-
-        Utils::log('Controller not found!');
     }
 
     /**
@@ -263,9 +264,6 @@ class Bootstrap
      */
     public function run()
     {
-        # Save if is a restful application
-        $this->request->setUseRestful($this->getConfig('use_restful'));
-
         $defaultUrlName = $this->request->getDefaultUrlName();
 
         # Start autoload models
@@ -325,6 +323,9 @@ class Bootstrap
     function __construct()
     {
         $this->loadConfigs();
-        $this->request = new RequestURL($this->getConfig('url_map'));
+        $this->request = new RequestURL(
+            $this->getConfig('url_map'),
+            $this->getConfig('use_restful')
+        );
     }
 }

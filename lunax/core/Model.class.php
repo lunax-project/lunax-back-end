@@ -423,12 +423,11 @@ abstract class Model
                 'mysql:host=' .     $dbConfig->host .
                 ';dbname='    .     $dbConfig->db,
                                     $dbConfig->user,
-                                    $dbConfig->pass,
-                array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+                                    $dbConfig->pass
             );
 
         } catch (Exception $e) {
-            Utils::error("Database not connected!");
+            Utils::error("Database not connected!\nDetails:\n$e");
         }
     }
 

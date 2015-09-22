@@ -197,29 +197,35 @@ Para criar um controller é necessário criar um arquivo com a seguinte estrutur
  */
 class IndexController extends Controller
 {
-  // HTTP GET action...
-  public function getIndexAction()
-  {
-    // Code...
-  }
+    // Normal action, not using restful
+    public function indexAction()
+    {
+      // Code...
+    }
 
-  // HTTP POST action...
-  public function postIndexAction()
-  {
+    // HTTP GET action
+    public function getIndexAction()
+    {
     // Code...
-  }
+    }
 
-  // HTTP PUT action...
-  public function putIndexAction()
-  {
+    // HTTP POST action
+    public function postIndexAction()
+    {
     // Code...
-  }
+    }
 
-  // HTTP DELETE action...
-  public function deleteIndexAction()
-  {
+    // HTTP PUT action
+    public function putIndexAction()
+    {
     // Code...
-  }
+    }
+
+    // HTTP DELETE action
+    public function deleteIndexAction()
+    {
+    // Code...
+    }
 }
 
 ````
@@ -283,6 +289,7 @@ $model->fetchAll();
 
 // Seleciona a linha que o primarykey seja igual ao passado
 $model->find($pk);
+$model->find($pk1, $pk2, $pk3, ...);
 
 ````
 

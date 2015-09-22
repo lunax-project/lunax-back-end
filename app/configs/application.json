@@ -2,8 +2,8 @@
 	"name": null,
 
 	"template": false,
-	"save_log": false,
-	"display_errors": false,
+	"save_log": true,
+	"display_errors": true,
 
 	"auth": false,
 	"auth_class": "",
@@ -13,7 +13,7 @@
 	"not_found_controller": "",
 
 	"url_get_map": {},
-	"use_restful": true,
+	"use_restful": false,
 	"template_map": {},
 	"not_auth": []
 }
