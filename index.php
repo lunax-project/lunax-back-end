@@ -1,5 +1,8 @@
 <?php
 
+# Version of lunax
+define('LUNAX_VERSION', 2.0);
+
 # Super directory
 define('ROOT', dirname(__FILE__));
 
