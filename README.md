@@ -1,8 +1,40 @@
-Lunax Framework Alpha 2.0
+Lunax Framework 2.0 Alpha
 ===================
 
 Um framework de php orientado a objetos com mvc baseado em restful para pequenas aplicações Suporte PHP `5.3+`.
 
+----------
+
+Estrutura da aplicação
+--------------------
+```
+.htaccess
+index.php
+app/
+  .htaccess
+  configs/
+    application.json
+    database.json
+  controllers/
+  layouts/
+  log/
+  models/
+  views/
+lunax/
+  .htaccess
+  configs/
+    application.json
+    database.json
+  core/
+    Bootstrap.class.php
+    Controller.class.php
+    Model.class.php
+    RequestURL.class.php
+    Template.class.php
+    Utils.class.php
+    View.class.php
+  models/
+```
 ----------
 
 Arquivo global e local
@@ -18,7 +50,7 @@ Configurações da aplicação
 --------------------
 
 Os dados do arquivo de configuração seguem a seguinte prioridade:
-1. Dados padrão
+1. Configurações padrão
 2. Configurações globais em `lunax/configs/application.json`
 3. Configurações da aplicação em `app/configs/application.json`
 
@@ -36,8 +68,22 @@ Abaixo segue o conteúdo em application.json:
   // A página terá um template ou será baseada nos views
   "template": true,
 
-  // A aplicação irá usar os métodos http para formar a url
+  // A aplicação irá usar os métodos http para
+  // formar a url da ação
   "use_restful": true,
+
+  // Permite o restful nos controllers citados
+  "allow_restful": [
+    "controller1",
+    "controller1",
+  ],
+
+  // Bloqueia o restful nos controllers citados
+  // Prioridade maior que autorização
+  "denny_restful": [
+    "controller3",
+    "controller4",
+  ],
 
   // Nome do controller se não encontrar
   "not_found_controller": "not_found",
@@ -97,16 +143,16 @@ Os dados do arquivo de configuração do banco de dados seguem a seguinte priori
 ````javascript
 {
   // Host da hospedagem do banco de dados
-  "host":    "localhost",
+  "host":     "localhost",
 
   // Nome do banco de dados
-  "db":      "application_database",
+  "db":       "application_database",
 
   // Usuário para conectar com o banco de dados
-  "user":    "myUsername",
+  "user":     "myUsername",
 
   // Senha do banco de dados
-  "pass":    "myPassword"
+  "pass":     "myPassword"
 }
 ````
 
@@ -121,54 +167,63 @@ Uma classe com algumas funções que são comuns na hora do desenvolvimento das 
 
 ````php
 
-// Nome da aplicação nas configurações
-Utils::appName();
+Interface Utils
+{
+  // Nome da aplicação nas configurações
+  public function appName();
 
-// Datetime atual
-Utils::now();
+  // Datetime atual
+  public function now();
 
-// Converte os caracteres especiais do HTML
-Utils::escape($str);
+  // Converte os caracteres especiais do HTML
+  public function escape($str);
 
-/*
- * Converte os caracteres especiais do HTML
- * preservando as quebras de linha
- */
-Utils::escapeLong($str);
+  /*
+   * Converte os caracteres especiais do HTML
+   * preservando as quebras de linha
+   */
+  public function escapeLong($str);
 
-// Mostra um erro se tiver abilitado nos parâmetros
-Utils::error($message);
+  /* Mostra um erro se tiver abilitado nos parâmetros
+   * string  $message  Mensagem que será salva
+   * boolean $break    Forçar a parar a aplicação
+   */
+  public function error($message, $break = false);
 
-/*
- * Transforma o texto em uma url
- * Exemplo: Utils::getURL('/'); -> http://example.com
- * Quando deseja subir um diretório mostra a url real
- * Exemplo:
- * Se tiver no diretório http://example.com/mydir
- * Utils::getURL('../'); -> http://example.com
- */
-Utils::getURL($url);
+  // Salva no log se estiver abilitado
+  public function log($message);
 
-// Converte um número em valor R$
-Utils::parseValue($value);
+  /*
+   * Transforma o texto em uma url
+   * Exemplo: public function getURL('/'); -> http://example.co
+   * Quando deseja subir um diretório mostra a url real
+   * Exemplo:
+   * Se tiver no diretório http://example.com/mydir
+   * public function getURL('../'); -> http://example.co
+   */
+  public function getURL($url);
 
-/*
- * Mostra quandos porcentos deve de desconto baseado
- * no valor anterior e no atual
- */
-Utils::getPercentDiscount($lastValue, $newValue);
+  // Converte um número em valor R$
+  public function parseValue($value);
 
-// Redireciona a página para a url passada
-Utils::location($url);
+  /*
+   * Mostra quandos porcentos deve de desconto baseado
+   * no valor anterior e no atual
+   */
+  public function getPercentDiscount($lastValue, $newValue);
+
+  // Redireciona a página para a url passada
+  public function location($url);
 
 
-/*
- * Para capturar o conteúdo de um arquivo com as variáveis
- * compiladas em vez de texto simples utilize o método
- * `dataIncludeFile($filename)` onde `filename` é o arquivo que
- * será incluído.
- */
-Utils::dataIncludeFile('./foo.phtml');
+  /*
+   * Para capturar o conteúdo de um arquivo com as variáveis
+   * compiladas em vez de texto simples utilize o método
+   * `dataIncludeFile($filename)` onde `filename` é o arquivo que
+   * será incluído.
+   */
+  public function dataIncludeFile($filename);
+}
 
 ````
 
@@ -197,35 +252,35 @@ Para criar um controller é necessário criar um arquivo com a seguinte estrutur
  */
 class IndexController extends Controller
 {
-    // Normal action, not using restful
-    public function indexAction()
-    {
-      // Code...
-    }
-
-    // HTTP GET action
-    public function getIndexAction()
-    {
+  // Normal action, not using restful
+  public function indexAction()
+  {
     // Code...
-    }
+  }
 
-    // HTTP POST action
-    public function postIndexAction()
-    {
+  // HTTP GET action
+  public function getIndexAction()
+  {
     // Code...
-    }
+  }
 
-    // HTTP PUT action
-    public function putIndexAction()
-    {
+  // HTTP POST action
+  public function postIndexAction()
+  {
     // Code...
-    }
+  }
 
-    // HTTP DELETE action
-    public function deleteIndexAction()
-    {
+  // HTTP PUT action
+  public function putIndexAction()
+  {
     // Code...
-    }
+  }
+
+  // HTTP DELETE action
+  public function deleteIndexAction()
+  {
+    // Code...
+  }
 }
 
 ````
@@ -264,13 +319,13 @@ São classes que podem estar relacionadas com o banco de dados ou não, a classe
 ````php
 
 // Colunas que serão selecionadas
-$model->select(...$columns);
+$model->select($columns, ...);
 
 // Valores podem ser repetidos sim/não
 $model->distinct($val = true);
 
 // Tabelas que serão selecionadas
-$model->from(...$table);
+$model->from($table, ...);
 
 // Ordena de forma ascendente pela coluna
 $model->orderAsc($col);
@@ -278,7 +333,10 @@ $model->orderAsc($col);
 // Ordena de forma descendente pela coluna
 $model->orderDesc($col);
 
-// Limita a seleção
+/* Limita a seleção
+ * int $count    Máximo de resultados
+ * int $offset   A partir de onde começa os resultados
+ * /
 $model->limit($count, $offset = 0);
 
 // Seleciona o primeiro encontrado
@@ -287,7 +345,7 @@ $model->fetch();
 // Seleciona todos
 $model->fetchAll();
 
-// Seleciona a linha que o primarykey seja igual ao passado
+// Seleciona a linha que o primary key seja igual ao passado
 $model->find($pk);
 $model->find($pk1, $pk2, $pk3, ...);
 
@@ -301,9 +359,7 @@ $model->find($pk1, $pk2, $pk3, ...);
 /*
  * Atualiza os valores no banco de dados
  * Exemplo:
- * $model->update([
- *     'name' => 'value'
- * ]);
+ * $model->update(['name' => 'value', ...]);
  */
 $model->update(array $dataUpdate);
 
@@ -323,9 +379,7 @@ $model->decrement($col, $value);
 /*
  * Insere conteúdo no banco de dados
  * Exemplo:
- * $model->insert([
- *     'name' => 'value'
- * ]);
+ * $model->insert(['name' => 'value', ...]);
  */
 $model->insert(array $dataInsert);
 
@@ -344,7 +398,7 @@ $model->insert(array $dataInsert);
  * $model->delete(10, 75, 31);
  * $model->delete();
  */
-$model->delete(...$primaryKey = null);
+$model->delete($primaryKey = null, ...);
 
 ````
 
@@ -389,15 +443,16 @@ Para criar um site onePage utiliza o método de mesmo nome se não tiver um temp
 
 ````php
 $this->onePage([
-  'page 1',
-  'page 2',
-  'page 3',
-  'page 4',
-  'page 5'
+  'page-1',
+  'page-2',
+  'page-3',
+  'page-4',
+  'page-5',
+  ...
 ]);
 ````
 
-Caso haja algum template para a página, usando como exemplo o arquivo `layout/sub_template.page.phtml`:
+Caso haja algum template para cada página (usando como exemplo o arquivo `layout/sub_template.page.phtml`):
 
 ````php
 $this->onePage('sub_template', [
@@ -405,8 +460,9 @@ $this->onePage('sub_template', [
   'page-2',
   'page-3',
   'page-4',
-  'page-5'
+  'page-5',
+  ...
 ]);
 ````
-Para que o `sub_template` mostre o conteúdo da página utiliza o seguinte método `$this->content();`.
+Para que o `sub_template` mostre o conteúdo da página utiliza o método `$this->content();`.
 Os arquivos do onePage ficam diretamente no diretório `views`, nesse caso seria `views/page-1.phtml`.

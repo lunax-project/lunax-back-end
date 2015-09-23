@@ -215,18 +215,25 @@ class Bootstrap
         # Default configurations
         $defaultConfigs = (object)[
             'name'                  => null,
-            'auth'                  => false,
-            'template'              => false,
+
             'save_log'              => false,
             'display_errors'        => false,
+
+            'template'              => false,
+            'template_map'          => new StdClass,
+
+            'url_map'               => new StdClass,
             'not_found_controller'  => '',
+
+            'auth'                  => false,
             'auth_class'            => '',
             'auth_controller'       => '',
             'auth_action'           => '',
-            'template_map'          => new StdClass,
-            'url_map'               => new StdClass,
+            'not_auth'              => [],
+
             'use_restful'           => true,
-            'not_auth'              => []
+            'allow_restful'         => [],
+            'denny_restful'         => []
         ];
 
         # Low priority default configs
@@ -323,9 +330,11 @@ class Bootstrap
     function __construct()
     {
         $this->loadConfigs();
-        $this->request = new RequestURL(
-            $this->getConfig('url_map'),
-            $this->getConfig('use_restful')
-        );
+        $this->request = new RequestURL([
+            'url_map'        => $this->getConfig('url_map'),
+            'use_restful'    => $this->getConfig('use_restful'),
+            'allow_restful'  => $this->getConfig('allow_restful'),
+            'denny_restful'  => $this->getConfig('denny_restful')
+        ]);
     }
 }

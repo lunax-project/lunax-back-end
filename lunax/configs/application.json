@@ -1,19 +1,22 @@
 {
 	"name": null,
 
-	"template": false,
 	"save_log": false,
 	"display_errors": false,
+
+	"template": false,
+	"template_map": {},
+
+	"url_get_map": {},
+	"not_found_controller": "",
 
 	"auth": false,
 	"auth_class": "",
 	"auth_controller": "",
 	"auth_action": "",
+	"not_auth": [],
 
-	"not_found_controller": "",
-
-	"url_get_map": {},
-	"use_restful": true,
-	"template_map": {},
-	"not_auth": []
+	"use_restful": false,
+	"allow_restful": [],
+	"denny_restful": []
 }

@@ -8,6 +8,8 @@
  * Default url name:     $request->getDefaultUrlName();
  * Url map:              $request->getUrlMap();
  * Use restful:          $request->setUseRestful();
+ * Allow restful:		 $request->getAllowRestful($name);
+ * Denny restful:		 $request->getDennyRestful($name);
  * Controller:           $request->getController();
  * Controller name:      $request->getControllerName();
  * Action:               $request->getAction();
@@ -23,8 +25,10 @@ class RequestURL
 	private $partsRequest;
 	private $defaultUrlName;
 
-	# Boolean: true if using restful on application
+	# Restful variables
 	private $usingRestful;
+	private $allowRestful;
+	private $dennyRestful;
 
 	private $urlMap;
 
@@ -47,15 +51,15 @@ class RequestURL
 
 	# -------------------------------------------
 
-	public function getAbsoluteUrl()
-	{
-		return $this->absoluteUrl;
-	}
-
 	private function setAbsoluteUrl($absoluteUrl)
 	{
 		$this->absoluteUrl = $absoluteUrl;
 		return $this;
+	}
+
+	public function getAbsoluteUrl()
+	{
+		return $this->absoluteUrl;
 	}
 
 	# -------------------------------------------
@@ -74,7 +78,7 @@ class RequestURL
 
 	# -------------------------------------------
 
-	public function setUseRestful($usingRestful)
+	private function setUseRestful($usingRestful)
 	{
 		$this->usingRestful = $usingRestful;
 		return $this;
@@ -87,10 +91,31 @@ class RequestURL
 
 	# -------------------------------------------
 
-	public function getFullRequest()
+	private function setAllowRestful($allowRestful)
 	{
-		return $this->fullRequest;
+		$this->allowRestful = $allowRestful;
+		return $this;
 	}
+
+	public function getAllowRestful($name)
+	{
+		return in_array($name, $this->allowRestful);
+	}
+
+	# -------------------------------------------
+
+	private function setDennyRestful($dennyRestful)
+	{
+		$this->dennyRestful = $dennyRestful;
+		return $this;
+	}
+
+	public function getDennyRestful($name)
+	{
+		return in_array($name, $this->dennyRestful);
+	}
+
+	# -------------------------------------------
 
 	private function setFullRequest($fullRequest)
 	{
@@ -98,17 +123,22 @@ class RequestURL
 		return $this;
 	}
 
-	# -------------------------------------------
-
-	public function getServerRoot()
+	public function getFullRequest()
 	{
-		return $this->serverRoot;
+		return $this->fullRequest;
 	}
+
+	# -------------------------------------------
 
 	private function setServerRoot($serverRoot)
 	{
 		$this->serverRoot = $serverRoot;
 		return $this;
+	}
+
+	public function getServerRoot()
+	{
+		return $this->serverRoot;
 	}
 
 	# -------------------------------------------
@@ -170,6 +200,12 @@ class RequestURL
 		return $this;
 	}
 
+	private function setControllerName($controllerName)
+	{
+		$this->controllerName = $controllerName;
+		return $this;
+	}
+
 	/**
 	 * Gets the value of controllerName.
 	 *
@@ -178,12 +214,6 @@ class RequestURL
 	public function getControllerName()
 	{
 		return $this->controllerName;
-	}
-
-	private function setControllerName($controllerName)
-	{
-		$this->controllerName = $controllerName;
-		return $this;
 	}
 
 	/**
@@ -198,13 +228,26 @@ class RequestURL
 
 	public function setAction($action)
 	{
+		# Save current action
 		$this->action = $action;
 
+		# Used if using restful
+		$requestMethod = '';
+
+		# Check if is allow or denny restful
+		if (
+			!$this->getDennyRestful($this->controller) &&
+			($this->getUseRestful() || $this->getAllowRestful($this->controller))
+		) {
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+		}
+
 		$this->setActionName(lcfirst($this->makeRequestName(
-			$this->getUseRestful() ? $_SERVER['REQUEST_METHOD'] : '',
+			$requestMethod,
 			$action,
 			'action'
 		)));
+
 		return $this;
 	}
 
@@ -341,7 +384,7 @@ class RequestURL
 					|| $_SERVER['SERVER_PORT'] == 443;
 	}
 
-	public function __construct($urlMap = [], $useRestful = true)
+	public function __construct($configs)
 	{
 		$regexServerRoot = '/(.*)[\\\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
@@ -361,10 +404,12 @@ class RequestURL
 		);
 
 		$this->partsRequest = $this->getPartsRequest();
-		$this->setUrlMap($urlMap);
 
-		# Save if is a restful application
-        $this->setUseRestful($useRestful);
+		// Set values
+		$this->setUrlMap($configs['url_map']);
+        $this->setUseRestful($configs['use_restful']);
+		$this->setAllowRestful($configs['allow_restful']);
+		$this->setDennyRestful($configs['denny_restful']);
 
 		# Set controller
 		$this->setController($this->getUrlName(0));
