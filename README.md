@@ -169,44 +169,46 @@ RequestURL
 Classe que trabalha com as requisições ao servidor, traduzindo URL's e restful.
 
 ````php
-// Requisição completa:
-RequestURL::getFullRequest();
+interface RequestURL {
+    // Requisição completa:
+    public static function getFullRequest();
 
-// Root do servidor:
-RequestURL::getServerRoot();
+    // Raiz do servidor:
+    public static function getServerRoot();
 
-// Requisição atual:
-RequestURL::getRequest();
+    // Requisição atual:
+    public static function getRequest();
 
-// Nome da url padrão:
-RequestURL::getDefaultUrlName();
+    // Nome da url padrão:
+    public static function getDefaultUrlName();
 
-// Mapa das URL's:
-RequestURL::getUrlMap();
+    // Mapa das URL's:
+    public static function getUrlMap();
 
-// Verifica se está usando restful por padrão:
-RequestURL::setUseRestful();
+    // Verifica se está usando restful por padrão:
+    public static function setUseRestful();
 
-// Verifica se o restful está permitodo para certo controller:
-RequestURL::getAllowRestful($name);
+    // Verifica se o restful está permitodo para certo controller:
+    public static function getAllowRestful($name);
 
-// Verifica se o restful está danido para certo controller:
-RequestURL::getDennyRestful($name);
+    // Verifica se o restful está danido para certo controller:
+    public static function getDennyRestful($name);
 
-// Controller:
-RequestURL::getController();
+    // Controller:
+    public static function getController();
 
-// Nome do controller:
-RequestURL::getControllerName();
+    // Nome do controller:
+    public static function getControllerName();
 
-// Ação (action do controller):
-RequestURL::getAction();
+    // Ação (action do controller):
+    public static function getAction();
 
-// Nome da ação (action do controller):
-RequestURL::getActionName();
+    // Nome da ação (action do controller):
+    public static function getActionName();
 
-// Parâmetors da requisição:
-RequestURL::getParameters();
+    // Parâmetors da requisição:
+    public static function getParameters();
+}
 ````
 
 ----------
