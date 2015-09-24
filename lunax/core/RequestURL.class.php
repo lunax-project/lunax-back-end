@@ -1,144 +1,135 @@
 <?php
 
 /*
- * $request = RequestURL(object);
- * Full request:         $request->getFullRequest();
- * Server root:          $request->getServerRoot();
- * Request:              $request->getRequest();
- * Default url name:     $request->getDefaultUrlName();
- * Url map:              $request->getUrlMap();
- * Use restful:          $request->setUseRestful();
- * Allow restful:		 $request->getAllowRestful($name);
- * Denny restful:		 $request->getDennyRestful($name);
- * Controller:           $request->getController();
- * Controller name:      $request->getControllerName();
- * Action:               $request->getAction();
- * Action name:          $request->getActionName();
- * Parameters:           $request->getParameters();
+ * Full request:         RequestURL::getFullRequest();
+ * Server root:          RequestURL::getServerRoot();
+ * Request:              RequestURL::getRequest();
+ * Default url name:     RequestURL::getDefaultUrlName();
+ * Url map:              RequestURL::getUrlMap();
+ * Use restful:          RequestURL::setUseRestful();
+ * Allow restful:		 RequestURL::getAllowRestful($name);
+ * Denny restful:		 RequestURL::getDennyRestful($name);
+ * Controller:           RequestURL::getController();
+ * Controller name:      RequestURL::getControllerName();
+ * Action:               RequestURL::getAction();
+ * Action name:          RequestURL::getActionName();
+ * Parameters:           RequestURL::getParameters();
  */
 
 class RequestURL
 {
-	private $fullRequest;
-	private $absoluteUrl;
-	private $serverRoot;
-	private $partsRequest;
-	private $defaultUrlName;
+	private static $fullRequest;
+	private static $absoluteUrl;
+	private static $serverRoot;
+	private static $partsRequest;
+	private static $defaultUrlName;
 
 	# Restful variables
-	private $usingRestful;
-	private $allowRestful;
-	private $dennyRestful;
+	private static $usingRestful;
+	private static $allowRestful;
+	private static $dennyRestful;
 
-	private $urlMap;
+	private static $urlMap;
 
-	private $controller;
-	private $controllerName;
-	private $action;
-	private $actionName;
-	private $parameters;
+	private static $controller;
+	private static $controllerName;
+	private static $action;
+	private static $actionName;
+	private static $parameters;
 
-	private function setDefaultUrlName($defaultUrlName)
+	private static function setDefaultUrlName($defaultUrlName)
 	{
-		$this->defaultUrlName = $defaultUrlName;
-		return $this;
+		self::defaultUrlName = $defaultUrlName;
 	}
 
-	public function getDefaultUrlName()
+	public static function getDefaultUrlName()
 	{
-		return $this->defaultUrlName;
-	}
-
-	# -------------------------------------------
-
-	private function setAbsoluteUrl($absoluteUrl)
-	{
-		$this->absoluteUrl = $absoluteUrl;
-		return $this;
-	}
-
-	public function getAbsoluteUrl()
-	{
-		return $this->absoluteUrl;
+		return self::defaultUrlName;
 	}
 
 	# -------------------------------------------
 
-	private function setUrlMap($urlMap)
+	private static function setAbsoluteUrl($absoluteUrl)
 	{
-		$this->urlMap = $urlMap;
-		return $this;
+		self::absoluteUrl = $absoluteUrl;
 	}
 
-	public function getUrlMap($name)
+	public static function getAbsoluteUrl()
 	{
-		return isset($this->urlMap->$name) ?
-			$this->urlMap->$name : false;
-	}
-
-	# -------------------------------------------
-
-	private function setUseRestful($usingRestful)
-	{
-		$this->usingRestful = $usingRestful;
-		return $this;
-	}
-
-	public function getUseRestful()
-	{
-		return $this->usingRestful;
+		return self::absoluteUrl;
 	}
 
 	# -------------------------------------------
 
-	private function setAllowRestful($allowRestful)
+	private static function setUrlMap($urlMap)
 	{
-		$this->allowRestful = $allowRestful;
-		return $this;
+		self::urlMap = $urlMap;
 	}
 
-	public function getAllowRestful($name)
+	public static function getUrlMap($name)
 	{
-		return in_array($name, $this->allowRestful);
-	}
-
-	# -------------------------------------------
-
-	private function setDennyRestful($dennyRestful)
-	{
-		$this->dennyRestful = $dennyRestful;
-		return $this;
-	}
-
-	public function getDennyRestful($name)
-	{
-		return in_array($name, $this->dennyRestful);
+		return isset(self::urlMap->$name) ?
+			self::urlMap->$name : false;
 	}
 
 	# -------------------------------------------
 
-	private function setFullRequest($fullRequest)
+	private static function setUseRestful($usingRestful)
 	{
-		$this->fullRequest = $fullRequest;
-		return $this;
+		self::usingRestful = $usingRestful;
 	}
 
-	public function getFullRequest()
+	public static function getUseRestful()
 	{
-		return $this->fullRequest;
+		return self::usingRestful;
 	}
 
 	# -------------------------------------------
 
-	private function setServerRoot($serverRoot)
+	private static function setAllowRestful($allowRestful)
 	{
-		$this->serverRoot = $serverRoot;
-		return $this;
+		self::allowRestful = $allowRestful;
 	}
 
-	public function getServerRoot()
+	public static function getAllowRestful($name)
 	{
-		return $this->serverRoot;
+		return in_array($name, self::allowRestful);
+	}
+
+	# -------------------------------------------
+
+	private static function setDennyRestful($dennyRestful)
+	{
+		self::dennyRestful = $dennyRestful;
+	}
+
+	public static function getDennyRestful($name)
+	{
+		return in_array($name, self::dennyRestful);
+	}
+
+	# -------------------------------------------
+
+	private static function setFullRequest($fullRequest)
+	{
+		self::fullRequest = $fullRequest;
+	}
+
+	public static function getFullRequest()
+	{
+		return self::fullRequest;
+	}
+
+	# -------------------------------------------
+
+	private static function setServerRoot($serverRoot)
+	{
+		self::serverRoot = $serverRoot;
+	}
+
+	public static function getServerRoot()
+	{
+		return self::serverRoot;
 	}
 
 	# -------------------------------------------
@@ -148,28 +139,28 @@ class RequestURL
 	 *
 	 * @return mixed
 	 */
-	public function getController()
+	public static function getController()
 	{
-		return $this->controller;
+		return self::controller;
 	}
 
-	public function setController($controller)
+	public static function setController($controller)
 	{
-		$this->controller = $controller;
+		self::controller = $controller;
 
-		$this->setControllerName($this->makeRequestName(
+		self::setControllerName(self::makeRequestName(
 			'',
 			$controller,
 			'controller'
 		));
 
-		if ($paramUrl = $this->getUrlMap($this->getController())) {
+		if ($paramUrl = self::getUrlMap(self::getController())) {
 
 			/*
 			 * Sempre que o controller tiver salvo no mapa de url
 			 * a ação será a padrão
 			 */
-			$this->setAction($this->defaultUrlName);
+			self::setAction(self::defaultUrlName);
 
 			/*
 			 *	Se o controller for o primeiro nome na URL começa
@@ -178,32 +169,30 @@ class RequestURL
 			 *	isso acontece quando o controller é o index e o primeiro
 			 *	parâmetro não é index
 			 */
-			$init = ($this->getUrlName(0) == $controller) ? 1 : 0;
+			$init = (self::getUrlName(0) == $controller) ? 1 : 0;
 
 			# Se a ação padrão já tiver na url não será passada como parâmetro
-			if ($this->getUrlName($init) == $this->defaultUrlName) {
+			if (self::getUrlName($init) == self::defaultUrlName) {
 				$init ++;
 			}
 		}
 
 		else {
-			$this->setAction($this->getUrlName(1));
+			self::setAction(self::getUrlName(1));
 			$init = 2;
 
-			$paramUrl = $this->getUrlMap(
-				$this->getController() . '/' .
-				$this->getAction()
+			$paramUrl = self::getUrlMap(
+				self::getController() . '/' .
+				self::getAction()
 			);
 		}
 
-		$this->setParameters($this->prepareParameters($paramUrl, $init));
-		return $this;
+		self::setParameters(self::prepareParameters($paramUrl, $init));
 	}
 
-	private function setControllerName($controllerName)
+	private static function setControllerName($controllerName)
 	{
-		$this->controllerName = $controllerName;
-		return $this;
+		self::controllerName = $controllerName;
 	}
 
 	/**
@@ -211,9 +200,9 @@ class RequestURL
 	 *
 	 * @return mixed
 	 */
-	public function getControllerName()
+	public static function getControllerName()
 	{
-		return $this->controllerName;
+		return self::controllerName;
 	}
 
 	/**
@@ -221,34 +210,33 @@ class RequestURL
 	 *
 	 * @return mixed
 	 */
-	public function getAction()
+	public static function getAction()
 	{
-		return $this->action;
+		return self::action;
 	}
 
-	public function setAction($action)
+	public static function setAction($action)
 	{
 		# Save current action
-		$this->action = $action;
+		self::action = $action;
 
 		# Used if using restful
 		$requestMethod = '';
 
 		# Check if is allow or denny restful
 		if (
-			!$this->getDennyRestful($this->controller) &&
-			($this->getUseRestful() || $this->getAllowRestful($this->controller))
+			!self::getDennyRestful(self::controller) &&
+			(self::getUseRestful() || self::getAllowRestful(self::controller))
 		) {
 			$requestMethod = $_SERVER['REQUEST_METHOD'];
 		}
 
-		$this->setActionName(lcfirst($this->makeRequestName(
+		self::setActionName(lcfirst(self::makeRequestName(
 			$requestMethod,
 			$action,
 			'action'
 		)));
 
-		return $this;
 	}
 
 	/**
@@ -256,15 +244,14 @@ class RequestURL
 	 *
 	 * @return mixed
 	 */
-	public function getActionName()
+	public static function getActionName()
 	{
-		return $this->actionName;
+		return self::actionName;
 	}
 
-	private function setActionName($actionName)
+	private static function setActionName($actionName)
 	{
-		$this->actionName = $actionName;
-		return $this;
+		self::actionName = $actionName;
 	}
 
 	/**
@@ -272,15 +259,14 @@ class RequestURL
 	 *
 	 * @return mixed
 	 */
-	public function getParameters()
+	public static function getParameters()
 	{
-		return $this->parameters;
+		return self::parameters;
 	}
 
-	private function setParameters($parameters)
+	private static function setParameters($parameters)
 	{
-		$this->parameters = $parameters;
-		return $this;
+		self::parameters = $parameters;
 	}
 
 	# -------------------------------------------
@@ -289,7 +275,7 @@ class RequestURL
 	 * Replace accents to equivalent letters
 	 * @return string
 	 */
-	private function replaceAccents($string)
+	private static function replaceAccents($string)
 	{
 		$search = explode(',',
 			'ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,ø,Ø,Å,Á,
@@ -303,36 +289,36 @@ class RequestURL
 	}
 
 
-	private function camelCase($str)
+	private static function camelCase($str)
 	{
 		// Deixa só textos e números da string sem acento
 		// Converte o que não for em espaço
-		$str = preg_replace('/[^a-z0-9]+/i', ' ', $this->replaceAccents($str));
+		$str = preg_replace('/[^a-z0-9]+/i', ' ', self::replaceAccents($str));
 
 		// Deixa maiúscula o primeiro caractere de cada palavra
 		return str_replace(' ', '', ucwords(trim(strtolower($str))));
 	}
 
-	private function makeRequestName($before, $name, $after)
+	private static function makeRequestName($before, $name, $after)
 	{
-		return $this->camelCase(implode(' ', [$before, $name, $after]));
+		return self::camelCase(implode(' ', [$before, $name, $after]));
 	}
 
-	public function getRequest()
+	public static function getRequest()
 	{
-		$regex = '/^(' . str_replace('/', '\/', $this->getServerRoot() ) .')/';
-		return preg_replace($regex, '', $this->getFullRequest());
+		$regex = '/^(' . str_replace('/', '\/', self::getServerRoot() ) .')/';
+		return preg_replace($regex, '', self::getFullRequest());
 	}
 
-	private function getPartsRequest()
+	private static function getPartsRequest()
 	{
-		preg_match_all('/\/([\w-]*)/', $this->getRequest(), $exp);
+		preg_match_all('/\/([\w-]*)/', self::getRequest(), $exp);
 		return $exp[1];
 	}
 
-	private function prepareParameters($paramsNames, $init)
+	private static function prepareParameters($paramsNames, $init)
 	{
-		$countData	= count($this->partsRequest);
+		$countData	= count(self::partsRequest);
 		$parameters	= [];
 
 		if ($paramsNames) {
@@ -340,12 +326,12 @@ class RequestURL
 		}
 
 		for ($i = $init; $i < $countData; $i++) {
-			if ($this->partsRequest[$i] !== '') {
+			if (self::partsRequest[$i] !== '') {
 				if ($paramsNames && isset($paramsNames[$i - $init])) {
 					$paramName = $paramsNames[$i - $init];
-					$parameters[$paramName] = $this->partsRequest[$i];
+					$parameters[$paramName] = self::partsRequest[$i];
 				} else {
-					array_push($parameters, $this->partsRequest[$i]);
+					array_push($parameters, self::partsRequest[$i]);
 				}
 			}
 		}
@@ -356,19 +342,19 @@ class RequestURL
 	/**
 	 * Get the URL name by index
 	 */
-	private function getUrlName($index)
+	private static function getUrlName($index)
 	{
 		return (
-			isset($this->partsRequest[$index]) &&
-			!empty($this->partsRequest[$index])
-		) ? $this->partsRequest[$index] : $this->defaultUrlName;
+			isset(self::partsRequest[$index]) &&
+			!empty(self::partsRequest[$index])
+		) ? self::partsRequest[$index] : self::defaultUrlName;
 	}
 
 	/**
 	 * Detect page refresh
 	 * @return boolean
 	 */
-	public function isRefresh()
+	public static function isRefresh()
 	{
 		return isset($_SERVER['HTTP_CACHE_CONTROL']) &&
 				   $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
@@ -378,40 +364,40 @@ class RequestURL
 	 * Detect secure connection
 	 * @return boolean
 	 */
-	public function isSecure()
+	public static function isSecure()
 	{
 		return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
 					|| $_SERVER['SERVER_PORT'] == 443;
 	}
 
-	public function __construct($configs)
+	public static function configure($configs)
 	{
 		$regexServerRoot = '/(.*)[\\\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
-		$this->setDefaultUrlName('index');
-		$this->setFullRequest(parse_url($uri)['path']);
+		self::setDefaultUrlName('index');
+		self::setFullRequest(parse_url($uri)['path']);
 
-		$this->setServerRoot(preg_replace(
+		self::setServerRoot(preg_replace(
 			$regexServerRoot,
 			'$1',
 			$_SERVER['SCRIPT_NAME']
 		));
 
-		$this->setAbsoluteUrl(
+		self::setAbsoluteUrl(
 			# http or https
-			'http' . ($this->isSecure() ? 's' : '') .
+			'http' . (self::isSecure() ? 's' : '') .
 			'://' . $_SERVER['SERVER_NAME']
 		);
 
-		$this->partsRequest = $this->getPartsRequest();
+		self::partsRequest = self::getPartsRequest();
 
 		// Set values
-		$this->setUrlMap($configs['url_map']);
-        $this->setUseRestful($configs['use_restful']);
-		$this->setAllowRestful($configs['allow_restful']);
-		$this->setDennyRestful($configs['denny_restful']);
+		self::setUrlMap($configs['url_map']);
+        self::setUseRestful($configs['use_restful']);
+		self::setAllowRestful($configs['allow_restful']);
+		self::setDennyRestful($configs['denny_restful']);
 
 		# Set controller
-		$this->setController($this->getUrlName(0));
+		self::setController(self::getUrlName(0));
 	}
 }

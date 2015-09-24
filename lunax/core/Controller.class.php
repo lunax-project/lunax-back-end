@@ -5,9 +5,6 @@ abstract class Controller
 	# Data to display on view
 	public $view;
 
-	# Param of URL request
-	public $paramURL;
-
 	/**
 	 * Change application display template
 	 */
@@ -16,9 +13,8 @@ abstract class Controller
 		$GLOBALS['app']->setConfig('template', $enabled);
 	}
 
-	public function __construct($parameters)
+	public function __construct()
 	{
 		$this->view = new StdClass;
-		$this->paramURL = $parameters;
 	}
 }

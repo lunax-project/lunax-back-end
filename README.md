@@ -164,6 +164,54 @@ Os dados do arquivo de configuração do banco de dados seguem a seguinte priori
 ----------
 
 
+RequestURL
+--------------------
+Classe que trabalha com as requisições ao servidor, traduzindo URL's e restful.
+
+````php
+// Requisição completa:
+RequestURL::getFullRequest();
+
+// Root do servidor:
+RequestURL::getServerRoot();
+
+// Requisição atual:
+RequestURL::getRequest();
+
+// Nome da url padrão:
+RequestURL::getDefaultUrlName();
+
+// Mapa das URL's:
+RequestURL::getUrlMap();
+
+// Verifica se está usando restful por padrão:
+RequestURL::setUseRestful();
+
+// Verifica se o restful está permitodo para certo controller:
+RequestURL::getAllowRestful($name);
+
+// Verifica se o restful está danido para certo controller:
+RequestURL::getDennyRestful($name);
+
+// Controller:
+RequestURL::getController();
+
+// Nome do controller:
+RequestURL::getControllerName();
+
+// Ação (action do controller):
+RequestURL::getAction();
+
+// Nome da ação (action do controller):
+RequestURL::getActionName();
+
+// Parâmetors da requisição:
+RequestURL::getParameters();
+````
+
+----------
+
+
 Utils
 --------------------
 

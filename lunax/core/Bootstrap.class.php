@@ -61,7 +61,7 @@ class Bootstrap
      */
     private function loadController()
     {
-        $controllerName = $this->request->getControllerName();
+        $controllerName = RequestURL::getControllerName();
 
         $controllerFile = implode(DS, [
             APPDIR,
@@ -72,9 +72,7 @@ class Bootstrap
         if (file_exists($controllerFile)) {
             require_once $controllerFile;
             if (class_exists($controllerName)) {
-                $this->controller = new $controllerName(
-                    $this->request->getParameters()
-                );
+                $this->controller = new $controllerName();
 
                 if (method_exists($this->controller, 'beforeAction')) {
                     $this->controller->beforeAction();
@@ -94,7 +92,7 @@ class Bootstrap
      */
     private function loadAction()
     {
-        $actionName = $this->request->getActionName();
+        $actionName = RequestURL::getActionName();
 
         if (method_exists($this->controller, $actionName)) {
             $this->controller->$actionName();
@@ -113,8 +111,8 @@ class Bootstrap
     private function makeViewName()
     {
         return implode(DS, [
-            $this->request->getController(),
-            $this->request->getAction()
+            RequestURL::getController(),
+            RequestURL::getAction()
         ]);
     }
 
@@ -124,7 +122,7 @@ class Bootstrap
     private function loadTemplate()
     {
         $view = $this->makeViewName();
-        $controller = $this->request->getController();
+        $controller = RequestURL::getController();
         $templateMap = $this->getConfig('template_map');
 
         # Template name default
@@ -158,7 +156,7 @@ class Bootstrap
      */
     private function setNotLoaded()
     {
-        $this->request->setController(
+        RequestURL::setController(
             $this->getConfig('not_found_controller')
         );
 
@@ -251,7 +249,7 @@ class Bootstrap
      */
     private function checkAuth()
     {
-        $controller = $this->request->getController();
+        $controller = RequestURL::getController();
         $allowAuth = $this->getConfig('not_auth');
 
         # Check auth config and auth allow
@@ -271,7 +269,7 @@ class Bootstrap
      */
     public function run()
     {
-        $defaultUrlName = $this->request->getDefaultUrlName();
+        $defaultUrlName = RequestURL::getDefaultUrlName();
 
         # Start autoload models
         $this->autoLoadModels();
@@ -285,8 +283,8 @@ class Bootstrap
             }
 
             # Check url map default controller
-            elseif ($this->request->getUrlMap($defaultUrlName)) {
-                $this->request->setController($defaultUrlName);
+            elseif (RequestURL::getUrlMap($defaultUrlName)) {
+                RequestURL::setController($defaultUrlName);
 
                 # Load url map default
                 if ($this->loadController()) {
@@ -303,8 +301,8 @@ class Bootstrap
 
         else {
             # Set auth controller and action
-            $this->request->setController($this->getConfig('auth_controller'));
-            $this->request->setAction($this->getConfig('auth_action'));
+            RequestURL::setController($this->getConfig('auth_controller'));
+            RequestURL::setAction($this->getConfig('auth_action'));
 
             # Load auth controller and action
             if ($this->loadController()) {
@@ -330,7 +328,7 @@ class Bootstrap
     function __construct()
     {
         $this->loadConfigs();
-        $this->request = new RequestURL([
+        RequestURL::configure([
             'url_map'        => $this->getConfig('url_map'),
             'use_restful'    => $this->getConfig('use_restful'),
             'allow_restful'  => $this->getConfig('allow_restful'),
