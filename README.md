@@ -3,6 +3,10 @@ Lunax Framework 2.0 Alpha
 
 Um framework de php orientado a objetos com mvc baseado em restful para pequenas aplicações Suporte PHP `5.3+`.
 
+TODO:
+* Controller para templates
+* Dados do request poderem ser acessados pelo view
+
 ----------
 
 Estrutura da aplicação
@@ -60,7 +64,7 @@ Abaixo segue o conteúdo em application.json:
 ```javascript
 {
   /*
-   * Nome da aplicação, útil para usar em Utils::getName();
+   * Nome da aplicação, útil para usar em Utils::appName();
    * Dessa forma não fica repetindo o mesmo nome
    */
   "name": "Application name",
