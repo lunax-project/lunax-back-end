@@ -1,4 +1,18 @@
 *~
-!/app/*
-/app/*/**
+
+# Clear global models
 /lunax/models/**
+
+# Clear application models
+/app/controllers/**
+/app/layout/**
+/app/log/**
+/app/models/**
+/app/views/**
+
+# Clear sub application models
+/sub_application/app/controllers/**
+/sub_application/app/layout/**
+/sub_application/app/log/**
+/sub_application/app/models/**
+/sub_application/app/views/**

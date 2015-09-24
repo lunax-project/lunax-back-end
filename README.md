@@ -336,7 +336,7 @@ $model->orderDesc($col);
 /* Limita a seleção
  * int $count    Máximo de resultados
  * int $offset   A partir de onde começa os resultados
- * /
+ */
 $model->limit($count, $offset = 0);
 
 // Seleciona o primeiro encontrado
