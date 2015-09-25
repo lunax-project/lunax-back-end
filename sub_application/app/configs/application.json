@@ -4,7 +4,7 @@
 	"save_log": false,
 	"display_errors": false,
 
-	"template": false,
+	"template": true,
 	"template_map": {},
 
 	"url_get_map": {},

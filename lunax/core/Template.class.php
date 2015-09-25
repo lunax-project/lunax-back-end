@@ -5,24 +5,44 @@ class Template
     private $view;
     private $viewName;
 
+	private function includeFile($type, $dir, $file)
+	{
+		$filename = implode(DS, [
+			APPDIR,
+			$type,
+			$dir,
+			$file
+		]);
+
+		if (file_exists($filename)) {
+			if (include $filename) {
+				Utils::log("File \"$filename\" included!");
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+
     /**
      * Include content of template
      */
-    public function content() {
-        $filename = implode(DS, [APPDIR, 'views', "$this->viewName.phtml"]);
+    public function content()
+    {
+        # Include the logical file
+		$this->includeFile('views', 'logical', "$this->viewName.php");
 
-        if (file_exists($filename)) {
-            include_once $filename;
-            Utils::log("View file \"$filename\" readed!");
-        } else {
-            Utils::error("View file \"$this->viewName\" not found!");
-        }
+		# Include the output file
+		if (!$this->includeFile('views', 'output', "$this->viewName.phtml")) {
+			Utils::error("View file \"$filename\" not found!");
+		}
     }
 
     /**
      * Make applications onePage
      */
-    public function onePage($subTemplate, $views = null) {
+    public function onePage($subTemplate, $views = null)
+    {
         # onePage([...]);
         if (gettype($subTemplate) == 'array') {
             $views = $subTemplate;
@@ -55,22 +75,17 @@ class Template
     {
         $this->viewName = $view;
 
-        $filename = implode(DS, [
-            APPDIR,
-            'layouts',
-            "$name.phtml"
-        ]);
-
         # Setting data of controller to template/view
         foreach ($dataView as $key => $value) {
             $this->$key = $value;
         }
 
-        if (file_exists($filename)) {
-            require_once $filename;
-            Utils::log("Layout file \"$filename\" readed!");
-        } else {
-            Utils::error("Layout file \"$filename\" not found!");
-        }
+        # Include the logical file
+		$this->includeFile('layouts', 'logical', "$name.php");
+
+		# Include the output file
+		if (!$this->includeFile('layouts', 'output', "$name.phtml")) {
+			Utils::error("Layout file \"$filename\" not found!");
+		}
     }
 }

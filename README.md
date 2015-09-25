@@ -1,44 +1,81 @@
-Lunax Framework 2.0 Alpha
+Lunax Framework 1.0 Alpha
 ===================
 
 Um framework de php orientado a objetos com mvc baseado em restful para pequenas aplicações Suporte PHP `5.3+`.
-
-TODO:
-* Controller para templates
-* Dados do request poderem ser acessados pelo view
 
 ----------
 
 Estrutura da aplicação
 --------------------
-```
-.htaccess
-index.php
-app/
-  .htaccess
-  configs/
-    application.json
-    database.json
-  controllers/
-  layouts/
-  log/
-  models/
-  views/
-lunax/
-  .htaccess
-  configs/
-    application.json
-    database.json
-  core/
-    Bootstrap.class.php
-    Controller.class.php
-    Model.class.php
-    RequestURL.class.php
-    Template.class.php
-    Utils.class.php
-    View.class.php
-  models/
-```
+````
+project
+│   index.php
+│   LICENSE
+│   README.md
+│   robots.txt
+│   TODO
+│
+├───lunax
+|    │
+|    │   .htaccess
+|    │
+|    ├───configs
+|    │   │   database.json
+|    │   │   application.json
+|    │   │
+|    │
+|    ├───core
+|    │   │   Bootstrap.class.php
+|    │   │   Controller.class.php
+|    │   │   Model.class.php
+|    │   │   RequestURL.class.php
+|    │   │   Template.class.php
+|    │   │   Utils.class.php
+|    │   │   View.class.php
+|    │   │
+|    │
+|    ├───models
+|    │   │   ...
+|    │   │
+|
+├───app
+|    │   .htaccess
+|    │
+|    ├───configs
+|    │   |   database.json
+|    │   |   application.json
+|    │   |
+|    │
+|    ├───log
+|    │   │   ...
+|    │   │
+|    │
+|    ├───models
+|    │   |   ...
+|    │   │
+|    │
+|    ├───views
+|    │   |
+|    │   ├───logical
+|    │   |      ...
+|    │   │
+|    │   ├───output
+|    │   |      ...
+|    │   │
+|    │
+|    ├───controllers
+|    │   │   ...
+|    │   │
+|    │
+|    ├───layouts
+|    │   |
+|    │   ├───logical
+|    │   |      ...
+|    │   │
+|    │   ├───output
+|    │   |      ...
+|    │   │
+````
 ----------
 
 Arquivo global e local
@@ -476,9 +513,33 @@ $model->orWhere($col, $value = null);
 Views
 --------------------
 
-Responsável por mostrar a parte onde o usuário terá contato, ou seja, essa parte designarar o usuário para o controller correto e passará os valores necessários para funcionar.
-O view mostra o conteúdo da página baseado no `controller/action` se tiver mostrando um template ele aparece quando chama o método `$this->content()`. Aqui está o diretório de um view de baseado no controller **news** e na ação **today**: `views/news/today.phtml`.
+Responsável por mostrar a parte onde o usuário terá contato, o view mostra o conteúdo da página baseado no `controller/action` se tiver mostrando um template ele aparece quando chama o método `$this->content()`.
 
+Os views são divididos em duas partes:
+1. Arquivos de lógica (não obrigatório)
+2. Arquivos de saída
+
+Os arquivos de lógica ficam em `/views/logical/` e utiliza o formato do arquivo é *php*, são chamados antes dos arquivos de saída, com eles é possível gerar funções que serão usadas na saída.
+
+Os arquivos de saída ficam em `/views/output/` e o utiliza formato do arquivo é *phtml*, são onde fica o resultado que será apresentado, utiliza **SOMENTE** as chamadas de funções, código em HTML, resultado em json ou algo parecido.
+
+Exemplo de um view que possui arquivo de lógica e um output, chamado a partir de `news/today`:
+
+````
+views
+│
+├───logical
+|    |
+|    ├───news
+|    │   |   today.php
+|    │   |
+│
+├───output
+|    |
+|    ├───news
+|    │   |   today.phtml
+|    │   |
+````
 
 ----------
 
