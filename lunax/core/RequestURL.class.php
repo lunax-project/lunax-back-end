@@ -342,7 +342,7 @@ class RequestURL
 	/**
 	 * Get the URL name by index
 	 */
-	private static function getUrlName($index)
+	public static function getUrlName($index)
 	{
 		return (
 			isset(self::$partsRequest[$index]) &&
