@@ -10,7 +10,7 @@ abstract class Controller
 	 */
 	public function setTemplate($enabled)
 	{
-		$GLOBALS['app']->setConfig('template', $enabled);
+		configs::set('template', $enabled);
 	}
 
 	public function __construct()

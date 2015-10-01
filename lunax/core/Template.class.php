@@ -34,7 +34,7 @@ class Template
 
 		# Include the output file
 		if (!$this->includeFile('views', 'output', "$this->viewName.phtml")) {
-			Utils::error("View file \"$filename\" not found!");
+			Utils::error("View file \"$this->viewName.phtml\" not found!");
 		}
     }
 

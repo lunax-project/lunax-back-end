@@ -17,6 +17,7 @@ define('APPDIR', ROOT . DS . 'app');
 
 /**
  * The lunax clases:
+ *   + Configs,
  *   + Utils,
  *   + RequestURL,
  *   + Model,
@@ -26,6 +27,7 @@ define('APPDIR', ROOT . DS . 'app');
  *   + Bootstrap
  */
 $lunaxClasses = [
+	'Configs',
 	'Utils',
 	'RequestURL',
 	'Model',

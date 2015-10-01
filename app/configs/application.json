@@ -1,13 +1,13 @@
 {
 	"name": null,
 
-	"save_log": true,
-	"display_errors": true,
+	"save_log": false,
+	"display_errors": false,
 
 	"template": false,
 	"template_map": {},
 
-	"url_get_map": {},
+	"router_url": {},
 	"not_found_controller": "",
 
 	"auth": false,

@@ -64,20 +64,16 @@ abstract class Model
         $qPdo = $this->__PDO->prepare($query);
 
         $param = json_encode($this->param);
-        $message = ("Query: $query" . PHP_EOL ."Param: $param");
+        $message = (
+            PHP_EOL . "Query: $query" .
+            PHP_EOL . "Param: $param" .
+            PHP_EOL . 'Status: '
+        );
 
         if (!$qPdo->execute($this->param)) {
-            Utils::log("
-                $message
-                Status: Success!
-            ");
-        }
-
-        else {
-            Utils::log("
-                $message
-                Status: Error!
-            ");
+            Utils::log("$message Success!");
+        } else {
+            Utils::log("$message Error!");
         }
 
         $this->reset();

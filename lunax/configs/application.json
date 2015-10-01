@@ -7,7 +7,7 @@
 	"template": false,
 	"template_map": {},
 
-	"url_get_map": {},
+	"router_url": {},
 	"not_found_controller": "",
 
 	"auth": false,

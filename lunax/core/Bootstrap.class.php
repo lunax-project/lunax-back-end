@@ -5,55 +5,6 @@ class Bootstrap
     public $request;
     private $controller;
     private $action;
-    private $configs;
-
-    /**
-     * Load configurations file by directory root
-     */
-    private function loadConfigFile($dir)
-    {
-        $fullFileName = implode(DS, [
-            $dir,
-            'configs',
-            'application.json'
-        ]);
-
-        if (file_exists($fullFileName)) {
-            return json_decode(file_get_contents($fullFileName));
-        } else {
-            return new StdClass;
-        }
-    }
-
-    /**
-     * Extends last configurations
-     */
-    private function extendsConfigs($newConfigs)
-    {
-        foreach ($newConfigs as $name => $value) {
-            $this->setConfig($name, $value);
-        }
-    }
-
-    /**
-     * Get the value of application by name of configuration
-     */
-    public function getConfig($name) {
-        if (array_key_exists($name, $this->configs)) {
-            return $this->configs->$name;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Set a new value to application config
-     */
-    public function setConfig($name, $value) {
-        if (array_key_exists($name, $this->configs)) {
-            $this->configs->$name = $value;
-        }
-    }
 
     /**
      * Load application controller
@@ -123,7 +74,7 @@ class Bootstrap
     {
         $view = $this->makeViewName();
         $controller = RequestURL::getController();
-        $templateMap = $this->getConfig('template_map');
+        $templateMap = configs::get('template_map');
 
         # Template name default
         $templateName = 'default';
@@ -157,7 +108,7 @@ class Bootstrap
     private function setNotLoaded()
     {
         RequestURL::setController(
-            $this->getConfig('not_found_controller')
+            configs::get('not_found_controller')
         );
 
         if ($this->loadController()) {
@@ -206,55 +157,16 @@ class Bootstrap
     }
 
     /**
-     * Load configurations of application
-     */
-    private function loadConfigs()
-    {
-        # Default configurations
-        $defaultConfigs = (object)[
-            'name'                  => null,
-
-            'save_log'              => false,
-            'display_errors'        => false,
-
-            'template'              => false,
-            'template_map'          => new StdClass,
-
-            'url_map'               => new StdClass,
-            'not_found_controller'  => '',
-
-            'auth'                  => false,
-            'auth_class'            => '',
-            'auth_controller'       => '',
-            'auth_action'           => '',
-            'not_auth'              => [],
-
-            'use_restful'           => true,
-            'allow_restful'         => [],
-            'denny_restful'         => []
-        ];
-
-        # Low priority default configs
-        $this->configs = $defaultConfigs;
-
-        # Medium priority lunax configs (global)
-        $this->extendsConfigs($this->loadConfigFile(LUNAXDIR));
-
-        # Hight priority application configs (local)
-        $this->extendsConfigs($this->loadConfigFile(APPDIR));
-    }
-
-    /**
      * Check application have auth to continue
      */
     private function checkAuth()
     {
         $controller = RequestURL::getController();
-        $allowAuth = $this->getConfig('not_auth');
+        $allowAuth = configs::get('not_auth');
 
         # Check auth config and auth allow
-        if ($this->getConfig('auth') && !in_array($controller, $allowAuth)) {
-            $authClass = $this->getConfig('auth_class');
+        if (configs::get('auth') && !in_array($controller, $allowAuth)) {
+            $authClass = configs::get('auth_class');
             $auth = new $authClass;
 
             # Check is auth in the class
@@ -269,6 +181,12 @@ class Bootstrap
      */
     public function run()
     {
+        # Load application configs
+        configs::load();
+
+        # Configure the request
+        RequestURL::configure();
+
         $defaultUrlName = RequestURL::getDefaultUrlName();
 
         # Start autoload models
@@ -301,8 +219,8 @@ class Bootstrap
 
         else {
             # Set auth controller and action
-            RequestURL::setController($this->getConfig('auth_controller'));
-            RequestURL::setAction($this->getConfig('auth_action'));
+            RequestURL::setController(configs::get('auth_controller'));
+            RequestURL::setAction(configs::get('auth_action'));
 
             # Load auth controller and action
             if ($this->loadController()) {
@@ -313,7 +231,7 @@ class Bootstrap
         }
 
         # Run the view or template
-        if ($this->getConfig('template')) {
+        if (configs::get('template')) {
             $this->loadTemplate();
         } else {
             $this->loadView();
@@ -323,16 +241,5 @@ class Bootstrap
         if (method_exists($this->controller, 'afterAction')) {
             $this->controller->afterAction();
         }
-    }
-
-    function __construct()
-    {
-        $this->loadConfigs();
-        RequestURL::configure([
-            'url_map'        => $this->getConfig('url_map'),
-            'use_restful'    => $this->getConfig('use_restful'),
-            'allow_restful'  => $this->getConfig('allow_restful'),
-            'denny_restful'  => $this->getConfig('denny_restful')
-        ]);
     }
 }

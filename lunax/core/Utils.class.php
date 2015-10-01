@@ -10,7 +10,7 @@ class Utils
      */
     public static function appName()
     {
-        return self::escape($GLOBALS['app']->getConfig('name'));
+        return self::escape(configs::get('name'));
     }
 
     /**
@@ -49,7 +49,7 @@ class Utils
      */
     public static function error($message, $break = false)
     {
-        if ($GLOBALS['app']->getConfig('display_errors')) {
+        if (configs::get('display_errors')) {
             self::log("ERROR: $message");
             echo self::escape($message);
         }
@@ -64,7 +64,7 @@ class Utils
      */
     public static function log($message)
     {
-        if ($GLOBALS['app']->getConfig('save_log')) {
+        if (configs::get('save_log')) {
             # Prepare variables
             $time           = date('H:i:s');
             $date           = date("Y-m-d");
@@ -93,10 +93,9 @@ class Utils
     public static function getURL($url)
     {
         $separator      = '/';
-        $appRequest = $GLOBALS['app']->request;
-        $serverRoot     = preg_replace('/^(\/|\\\)/', '', $appRequest->getServerRoot());
+        $serverRoot     = preg_replace('/^(\/|\\\)/', '', requestURL::getServerRoot());
         $parts          = array_filter(explode($separator, $url), 'strlen');
-        $absolutes      = [$appRequest->getAbsoluteUrl()];
+        $absolutes      = [requestURL::getAbsoluteUrl()];
 
         # Caso não esteja na raiz adiciona o diretório
         if (!empty($serverRoot)) {

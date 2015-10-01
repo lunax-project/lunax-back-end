@@ -26,6 +26,7 @@ project
 |    │
 |    ├───core
 |    │   │   Bootstrap.class.php
+|    │   │   Configs.class.php
 |    │   │   Controller.class.php
 |    │   │   Model.class.php
 |    │   │   RequestURL.class.php
@@ -76,6 +77,26 @@ project
 |    │   |      ...
 |    │   │
 ````
+----------
+
+Classe  de configuração
+--------------------
+Classe que permite configurar a aplicação baseada nos arquivos pré configurados
+
+````php
+interface configs
+{
+    // Pega o valor de uma configuração
+    public static function get($name);
+
+    // Salva um novo valor em tempo de execução para determinada configuração
+    public static function set($name, $value);
+
+    // Carrega as configurações dos arquivos
+    public static function load();
+}
+````
+
 ----------
 
 Arquivo global e local
@@ -129,8 +150,8 @@ Abaixo segue o conteúdo em application.json:
   // Nome do controller se não encontrar
   "not_found_controller": "not_found",
 
-  // Mapeamento de URL
-  "url_get_map": {
+  // Rota das urls amigáveis
+  "router_url": {
     "controller1/action1": "variable",
     "controller1/action2": "variable1/variable2",
 

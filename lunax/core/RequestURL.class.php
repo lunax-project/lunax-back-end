@@ -5,7 +5,7 @@
  * Server root:          RequestURL::getServerRoot();
  * Request:              RequestURL::getRequest();
  * Default url name:     RequestURL::getDefaultUrlName();
- * Url map:              RequestURL::getUrlMap();
+ * Router url:         	 RequestURL::getRouterUrl();
  * Use restful:          RequestURL::setUseRestful();
  * Allow restful:		 RequestURL::getAllowRestful($name);
  * Denny restful:		 RequestURL::getDennyRestful($name);
@@ -29,7 +29,7 @@ class RequestURL
 	private static $allowRestful;
 	private static $dennyRestful;
 
-	private static $urlMap;
+	private static $router;
 
 	private static $controller;
 	private static $controllerName;
@@ -61,15 +61,15 @@ class RequestURL
 
 	# -------------------------------------------
 
-	private static function setUrlMap($urlMap)
+	private static function setRouterUrl($router)
 	{
-		self::$urlMap = $urlMap;
+		self::$router = $router;
 	}
 
-	public static function getUrlMap($name)
+	public static function getRouterUrl($name)
 	{
-		return isset(self::$urlMap->$name) ?
-			self::$urlMap->$name : false;
+		return isset(self::$router->$name) ?
+			self::$router->$name : false;
 	}
 
 	# -------------------------------------------
@@ -154,7 +154,7 @@ class RequestURL
 			'controller'
 		));
 
-		if ($paramUrl = self::getUrlMap(self::getController())) {
+		if ($paramUrl = self::getRouterUrl(self::getController())) {
 
 			/*
 			 * Sempre que o controller tiver salvo no mapa de url
@@ -181,7 +181,7 @@ class RequestURL
 			self::setAction(self::getUrlName(1));
 			$init = 2;
 
-			$paramUrl = self::getUrlMap(
+			$paramUrl = self::getRouterUrl(
 				self::getController() . '/' .
 				self::getAction()
 			);
@@ -370,7 +370,7 @@ class RequestURL
 					|| $_SERVER['SERVER_PORT'] == 443;
 	}
 
-	public static function configure($configs)
+	public static function configure()
 	{
 		$regexServerRoot = '/(.*)[\\\\\/]index\.php$/';
 		$uri = $_SERVER['REQUEST_URI'];
@@ -392,10 +392,10 @@ class RequestURL
 		self::$partsRequest = self::getPartsRequest();
 
 		// Set values
-		self::setUrlMap($configs['url_map']);
-        self::setUseRestful($configs['use_restful']);
-		self::setAllowRestful($configs['allow_restful']);
-		self::setDennyRestful($configs['denny_restful']);
+		self::setRouterUrl(configs::get('router_url'));
+        self::setUseRestful(configs::get('use_restful'));
+		self::setAllowRestful(configs::get('allow_restful'));
+		self::setDennyRestful(configs::get('denny_restful'));
 
 		# Set controller
 		self::setController(self::getUrlName(0));
