@@ -4,7 +4,7 @@
 	"save_log": false,
 	"display_errors": false,
 
-	"template": true,
+	"template": false,
 	"template_map": {},
 
 	"router_url": {},

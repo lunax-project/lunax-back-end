@@ -1,6 +1,6 @@
 User-agent: *
-Disallow: /app
-Disallow: /lunax
+Disallow: /app/
+Disallow: /lunax/
 
-Disallow: /sub_application/app
-Disallow: /sub_application/lunax
+Disallow: /sub_application/app/
+Disallow: /sub_application/lunax/
