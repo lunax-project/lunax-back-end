@@ -228,44 +228,53 @@ Classe que trabalha com as requisições ao servidor, traduzindo URL's e restful
 
 ````php
 interface RequestURL {
-    // Requisição completa:
-    public static function getFullRequest();
+  // Requisição completa:
+  public static function getFullRequest();
 
-    // Raiz do servidor:
-    public static function getServerRoot();
+  // Raiz do servidor:
+  public static function getServerRoot();
 
-    // Requisição atual:
-    public static function getRequest();
+  // URL absoluta
+  public static function getAbsoluteUrl();
 
-    // Nome da url padrão:
-    public static function getDefaultUrlName();
+  // URL base
+  public static function getBaseUrl();
 
-    // Mapa das URL's:
-    public static function getUrlMap();
+  // Requisição atual:
+  public static function getRequest();
 
-    // Verifica se está usando restful por padrão:
-    public static function setUseRestful();
+  // Nome da url padrão:
+  public static function getDefaultUrlName();
 
-    // Verifica se o restful está permitodo para certo controller:
-    public static function getAllowRestful($name);
+  // Rota das URL's:
+  public static function getRouterUrl();
 
-    // Verifica se o restful está danido para certo controller:
-    public static function getDennyRestful($name);
+  // Verifica se está usando restful por padrão:
+  public static function getUseRestful();
 
-    // Controller:
-    public static function getController();
+  // Verifica se o restful está permitodo para certo controller:
+  public static function getAllowRestful($name);
 
-    // Nome do controller:
-    public static function getControllerName();
+  // Verifica se o restful está danido para certo controller:
+  public static function getDennyRestful($name);
 
-    // Ação (action do controller):
-    public static function getAction();
+  // Controller:
+  public static function getController();
 
-    // Nome da ação (action do controller):
-    public static function getActionName();
+  // Nome do controller:
+  public static function getControllerName();
 
-    // Parâmetors da requisição:
-    public static function getParameters();
+  // Ação (action do controller):
+  public static function getAction();
+
+  // Nome da ação (action do controller):
+  public static function getActionName();
+
+  // Parâmetors da requisição:
+  public static function getParameters();
+
+  // Valor do parâmetros através do nome:
+  public static function getParameter($name);
 }
 ````
 

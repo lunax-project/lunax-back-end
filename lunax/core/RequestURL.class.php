@@ -6,13 +6,16 @@
  * Request:              RequestURL::getRequest();
  * Default url name:     RequestURL::getDefaultUrlName();
  * Router url:         	 RequestURL::getRouterUrl();
- * Use restful:          RequestURL::setUseRestful();
- * Allow restful:		 RequestURL::getAllowRestful($name);
- * Denny restful:		 RequestURL::getDennyRestful($name);
+ * Use restful:          RequestURL::getUseRestful();
+ * Base absolute url:    RequestURL::getAbsoluteUrl();
+ * Base url:             RequestURL::getBaseUrl();
+ * Allow restful:        RequestURL::getAllowRestful($name);
+ * Denny restful:        RequestURL::getDennyRestful($name);
  * Controller:           RequestURL::getController();
  * Controller name:      RequestURL::getControllerName();
  * Action:               RequestURL::getAction();
  * Action name:          RequestURL::getActionName();
+ * Parameter by name:    RequestURL::getParameter($name);
  * Parameters:           RequestURL::getParameters();
  */
 
@@ -21,6 +24,7 @@ class RequestURL
 	private static $fullRequest;
 	private static $absoluteUrl;
 	private static $serverRoot;
+	private static $baseUrl;
 	private static $partsRequest;
 	private static $defaultUrlName;
 
@@ -57,6 +61,18 @@ class RequestURL
 	public static function getAbsoluteUrl()
 	{
 		return self::$absoluteUrl;
+	}
+
+	# -------------------------------------------
+
+	private static function setBaseUrl($baseUrl)
+	{
+		self::$baseUrl = $baseUrl;
+	}
+
+	public static function getBaseUrl()
+	{
+		return self::$baseUrl;
 	}
 
 	# -------------------------------------------
@@ -269,6 +285,13 @@ class RequestURL
 		self::$parameters = $parameters;
 	}
 
+	public static function getParameter($name)
+	{
+		$parameters = self::getParameters();
+		return array_key_exists($name, $parameters)
+			? $parameters[$name] : null;
+	}
+
 	# -------------------------------------------
 
 	/**
@@ -342,12 +365,10 @@ class RequestURL
 	/**
 	 * Get the URL name by index
 	 */
-	public static function getUrlName($index)
+	private static function getUrlName($index)
 	{
-		return (
-			isset(self::$partsRequest[$index]) &&
-			!empty(self::$partsRequest[$index])
-		) ? self::$partsRequest[$index] : self::$defaultUrlName;
+		return (isset(self::$partsRequest[$index]) && !empty(self::$partsRequest[$index]))
+			? self::$partsRequest[$index] : self::$defaultUrlName;
 	}
 
 	/**
@@ -388,6 +409,8 @@ class RequestURL
 			'http' . (self::isSecure() ? 's' : '') .
 			'://' . $_SERVER['SERVER_NAME']
 		);
+
+		self::setBaseUrl(self::getAbsoluteUrl() . self::getServerRoot());
 
 		self::$partsRequest = self::getPartsRequest();
 
