@@ -34,7 +34,7 @@ class Bootstrap
             }
         }
 
-        Utils::Error("Controller \"$controllerName\" not loaded!", true);
+        Utils::log("Controller \"$controllerName\" not loaded!");
         return false;
     }
 
@@ -201,7 +201,7 @@ class Bootstrap
             }
 
             # Check url map default controller
-            elseif (RequestURL::getUrlMap($defaultUrlName)) {
+            elseif (RequestURL::getRouterUrl($defaultUrlName)) {
                 RequestURL::setController($defaultUrlName);
 
                 # Load url map default
