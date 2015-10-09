@@ -61,10 +61,18 @@ class Bootstrap
      */
     private function makeViewName()
     {
-        return implode(DS, [
-            RequestURL::getController(),
-            RequestURL::getAction()
-        ]);
+        # Get name of view file on controller
+        if (!is_null($this->controller->viewName)) {
+            return $this->controller->viewName;
+        }
+
+        # Make a new name of view based on request
+        else {
+            return implode(DS, [
+                RequestURL::getController(),
+                RequestURL::getAction()
+            ]);
+        }
     }
 
     /**
@@ -96,12 +104,8 @@ class Bootstrap
      */
     private function loadView()
     {
-        # Get name of view file
-        $viewFile = isset($this->controller->viewFile) ?
-            $this->controller->viewFile : $this->makeViewName();
-
         $view = new View(
-            $viewFile,
+            $this->makeViewName(),
             isset($this->controller->view) ? $this->controller->view : []
         );
     }
