@@ -96,8 +96,12 @@ class Bootstrap
      */
     private function loadView()
     {
+        # Get name of view file
+        $viewFile = isset($this->controller->viewFile) ?
+            $this->controller->viewFile : $this->makeViewName();
+
         $view = new View(
-            $this->makeViewName(),
+            $viewFile,
             isset($this->controller->view) ? $this->controller->view : []
         );
     }
