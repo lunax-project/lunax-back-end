@@ -62,7 +62,7 @@ class Bootstrap
     private function makeViewName()
     {
         # Get name of view file on controller
-        if (!is_null($this->controller->viewName)) {
+        if (isset($this->controller->viewName)) {
             return $this->controller->viewName;
         }
 
