@@ -52,7 +52,11 @@ class Template
         # onePage('sub_template', [...]);
         if (!is_null($subTemplate)) {
 
-            $subTemplate = implode(DS, [APPDIR, 'layout', "$subTemplate.page.phtml"]);
+            $subTemplate = implode(DS, [
+                APPDIR,
+                'layout',
+                "$subTemplate.page.phtml"
+            ]);
 
             if (file_exists($subTemplate)) {
                 foreach ($views as $name) {

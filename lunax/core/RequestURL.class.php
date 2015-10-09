@@ -367,8 +367,10 @@ class RequestURL
 	 */
 	private static function getUrlName($index)
 	{
-		return (isset(self::$partsRequest[$index]) && !empty(self::$partsRequest[$index]))
-			? self::$partsRequest[$index] : self::$defaultUrlName;
+		return (
+			isset(self::$partsRequest[$index]) &&
+			!empty(self::$partsRequest[$index])
+		) ? self::$partsRequest[$index] : self::$defaultUrlName;
 	}
 
 	/**

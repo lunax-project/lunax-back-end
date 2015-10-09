@@ -5,6 +5,9 @@ abstract class Controller
 	# Data to display on view
 	public $view;
 
+	# Custom view file
+	public $viewFile;
+
 	/**
 	 * Change application display template
 	 */

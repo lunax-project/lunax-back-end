@@ -79,8 +79,9 @@ class Utils
             $dataLog .= PHP_EOL;
 
             # Write the contents to the file,
-            # using the FILE_APPEND flag to append the content to the end of the file
-            # and the LOCK_EX flag to prevent anyone else writing to the file at the same time
+            # using the FILE_APPEND flag to append the content to the
+            # end of the file and the LOCK_EX flag to prevent anyone else
+            # writing to the file at the same time
             file_put_contents($filename, $dataLog, FILE_APPEND | LOCK_EX);
         }
     }
@@ -93,7 +94,8 @@ class Utils
     public static function getURL($url)
     {
         $separator      = '/';
-        $serverRoot     = preg_replace('/^(\/|\\\)/', '', requestURL::getServerRoot());
+        $serverRoot     = requestURL::getServerRoot();
+        $serverRoot     = preg_replace('/^(\/|\\\)/', '', $serverRoot);
         $parts          = array_filter(explode($separator, $url), 'strlen');
         $absolutes      = [requestURL::getAbsoluteUrl()];
 
