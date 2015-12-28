@@ -127,6 +127,16 @@ Abaixo segue o conteúdo em application.json:
    */
   "name": "Application name",
 
+  /*
+  * Quando ativo pode usar o módulo LunAjax e assim utilizando
+  * uma requizição ajax será apresentado apenas o view da aplicação
+  */
+  "lunajax": false,
+
+  // Nome do que será passado na URL para identificar
+  // uma requisição ajax
+  "lunajax_controller": "view_only",
+
   // A página terá um template ou será baseada nos views
   "template": true,
 

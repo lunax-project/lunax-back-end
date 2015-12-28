@@ -87,9 +87,13 @@ class Template
         # Include the logical file
 		$this->includeFile('layouts', 'logical', "$name.php");
 
-		# Include the output file
-		if (!$this->includeFile('layouts', 'output', "$name.phtml")) {
-			Utils::error("Layout file \"$filename\" not found!");
-		}
+        if (!RequestURL::getUsingLunajax()) {
+            # Include the output file
+            if (!$this->includeFile('layouts', 'output', "$name.phtml")) {
+                Utils::error("Layout file \"$filename\" not found!");
+            }
+        } else {
+            $this->content();
+        }
     }
 }

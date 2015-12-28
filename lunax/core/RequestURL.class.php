@@ -1,6 +1,9 @@
 <?php
 
 /*
+ * Index of controllers: RequestURL::getIndexControllers();
+ * Index of actions:     RequestURL::getIndexActions();
+ * Using LunAjax:        RequestURL::getUsingLunajax();
  * Full request:         RequestURL::getFullRequest();
  * Server root:          RequestURL::getServerRoot();
  * Request:              RequestURL::getRequest();
@@ -21,6 +24,12 @@
 
 class RequestURL
 {
+	# Index of controllers and actions
+	private static $indexControllers = 0;
+	private static $indexActions = 1;
+
+	private static $usingLunajax = false;
+
 	private static $fullRequest;
 	private static $absoluteUrl;
 	private static $serverRoot;
@@ -40,6 +49,42 @@ class RequestURL
 	private static $action;
 	private static $actionName;
 	private static $parameters;
+
+	private static function setIndexControllers($indexControllers)
+	{
+		self::$indexControllers = $indexControllers;
+	}
+
+	private static function getIndexControllers()
+	{
+		return self::$indexControllers;
+	}
+
+	# -------------------------------------------
+
+	private static function setIndexActions($indexActions)
+	{
+		self::$indexActions = $indexActions;
+	}
+
+	private static function getIndexActions()
+	{
+		return self::$indexActions;
+	}
+
+	# -------------------------------------------
+
+	private static function setUsingLunajax($usingLunajax)
+	{
+		self::$usingLunajax = $usingLunajax;
+	}
+
+	public static function getUsingLunajax()
+	{
+		return self::$usingLunajax;
+	}
+
+	# -------------------------------------------
 
 	private static function setDefaultUrlName($defaultUrlName)
 	{
@@ -185,17 +230,19 @@ class RequestURL
 			 *	isso acontece quando o controller é o index e o primeiro
 			 *	parâmetro não é index
 			 */
-			$init = (self::getUrlName(0) == $controller) ? 1 : 0;
+			$init = (self::getUrlName(
+				self::getIndexControllers()) == $controller
+			) ? self::getIndexControllers() + 1 : self::getIndexControllers();
 
 			# Se a ação padrão já tiver na url não será passada como parâmetro
 			if (self::getUrlName($init) == self::$defaultUrlName) {
-				$init ++;
+				$init++;
 			}
 		}
 
 		else {
-			self::setAction(self::getUrlName(1));
-			$init = 2;
+			self::setAction(self::getUrlName(self::getIndexActions()));
+			$init = self::getIndexActions() + 1;
 
 			$paramUrl = self::getRouterUrl(
 				self::getController() . '/' .
@@ -390,7 +437,7 @@ class RequestURL
 	public static function isSecure()
 	{
 		return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-					|| $_SERVER['SERVER_PORT'] == 443;
+				|| $_SERVER['SERVER_PORT'] == 443;
 	}
 
 	public static function configure()
@@ -422,7 +469,14 @@ class RequestURL
 		self::setAllowRestful(configs::get('allow_restful'));
 		self::setDennyRestful(configs::get('denny_restful'));
 
+		if (configs::get('lunajax') &&
+			(self::getUrlName(0) == configs::get('lunajax_controller'))) {
+			self::setIndexControllers(1);
+			self::setIndexActions(2);
+			self::setUsingLunajax(true);
+		}
+
 		# Set controller
-		self::setController(self::getUrlName(0));
+		self::setController(self::getUrlName(self::getIndexControllers()));
 	}
 }

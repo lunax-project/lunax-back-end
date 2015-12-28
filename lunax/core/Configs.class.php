@@ -64,6 +64,9 @@ class Configs
         $defaultConfigs = (object)[
             'name'                  => null,
 
+			'lunajax'				=> false,
+			'lunajax_controller'	=> 'view_only',
+
             'save_log'              => false,
             'display_errors'        => false,
 

@@ -1,10 +1,13 @@
 {
 	"name": null,
 
+	"lunajax": false,
+	"lunajax_controller": "view_only",
+
 	"save_log": false,
 	"display_errors": false,
 
-	"template": false,
+	"template": true,
 	"template_map": {},
 
 	"router_url": {},
