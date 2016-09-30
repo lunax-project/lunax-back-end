@@ -90,7 +90,7 @@ class Template
         if (!RequestURL::getUsingLunajax()) {
             # Include the output file
             if (!$this->includeFile('layouts', 'output', "$name.phtml")) {
-                Utils::error("Layout file \"$filename\" not found!");
+                Utils::error("Layout file \"$name.phtml\" not found!");
             }
         } else {
             $this->content();
