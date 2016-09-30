@@ -6,40 +6,40 @@ abstract class Model
     private $__PDO;
 
     # Vars SELECT
-    private $_selectCols = '*';
-    private $_selectDistinct = false;
-    private $_selectLimitCount = 0;
+    private $_selectCols        = '*';
+    private $_selectDistinct    = false;
+    private $_selectLimitCount  = 0;
     private $_selectLimitOffset = 0;
-    private $_selectOrderBy = array();
+    private $_selectOrderBy     = [];
     private $_selectOrderType;
     private $_selectQuery;
     private $_selectFrom;
 
     # Vars WHERE
-    private $dataWhere = array();
-    private $paramWhere = array();
-    private $param = array();
+    private $dataWhere  = [];
+    private $paramWhere = [];
+    private $param      = [];
 
     # Reset defaults values
     private function reset()
     {
-        $_selectCols = '*';
-        $_selectDistinct = false;
-        $_selectLimitCount = 0;
+        $_selectCols        = '*';
+        $_selectDistinct    = false;
+        $_selectLimitCount  = 0;
         $_selectLimitOffset = 0;
-        $_selectOrderType = null;
-        $_selectQuery = null;
-        $_selectFrom = null;
-        $this->dataWhere = array();
-        $this->paramWhere = array();
-        $this->param = array();
+        $_selectOrderType   = null;
+        $_selectQuery       = null;
+        $_selectFrom        = null;
+        $this->dataWhere    = [];
+        $this->paramWhere   = [];
+        $this->param        = [];
     }
 
     /**
      * Get configurations of file by direcory
      */
     private function getFileConfigDB($dir) {
-        $filename = implode(array($dir, 'configs', 'database.json'), DS);
+        $filename = implode([$dir, 'configs', 'database.json'], DS);
         return file_exists($filename) ? $filename : false;
     }
 
@@ -81,13 +81,13 @@ abstract class Model
     }
 
     # Retorna as partes da query
-    private function getQueryParts($data = array())
+    private function getQueryParts($data = [])
     {
         # Ajustes básicos
         $strColumns = '()';
         $strValues = '';
 
-        $columns = array();
+        $columns = [];
 
         $numItems = count($data);
         $i = 0;
@@ -206,19 +206,19 @@ abstract class Model
 
     public function where($col, $value = null)
     {
-        array_push($this->dataWhere, array('AND', $col));
+        array_push($this->dataWhere, ['AND', $col]);
         if (!is_null($value)) array_push($this->paramWhere, $value);
         return $this;
     }
 
     public function orWhere($col, $value = null)
     {
-        array_push($this->dataWhere, array('OR', $col));
+        array_push($this->dataWhere, ['OR', $col]);
         if (!is_null($value)) array_push($this->paramWhere, $value);
         return $this;
     }
 
-    # $lastId = $this->insert(array('foo' => 'bar'));
+    # $lastId = $this->insert(['foo' => 'bar']);
     public function insert(array $dataInsert)
     {
         # Pega os dados que serão inseridos
@@ -247,7 +247,7 @@ abstract class Model
         return $this->__PDO->lastInsertId();
     }
 
-    # $this->update(array('foo' => 'bar'));
+    # $this->update(['foo' => 'bar']);
     public function update(array $dataUpdate)
     {
         # Pega os dados que serão inseridos
@@ -342,7 +342,10 @@ abstract class Model
 
     public function from($table)
     {
-        $table = func_get_args();
+        if (gettype($table) != 'array') {
+            $table = func_get_args();
+        }
+
         foreach ($table as $i => $tb) {
             $table[$i] = preg_replace(
                 '/^(\w*)$/',
@@ -397,7 +400,7 @@ abstract class Model
     public function find($pk)
     {
         $args = func_get_args();
-        $rtn = array();
+        $rtn = [];
 
         foreach ($args as $pk) {
             $this->where('id = ?', $pk);
