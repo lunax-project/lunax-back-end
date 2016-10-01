@@ -70,7 +70,7 @@ abstract class Model
             PHP_EOL . 'Status: '
         );
 
-        if (!$qPdo->execute($this->param)) {
+        if ($qPdo->execute($this->param)) {
             Utils::log("$message Success!");
         } else {
             Utils::log("$message Error!");
