@@ -165,7 +165,7 @@ class Utils
      * Redirect browser to $url
      * @param  String $url
      */
-    public function location($url)
+    public static function location($url)
     {
         # Redirect browser
         header("Location: $url");
@@ -183,7 +183,7 @@ class Utils
      * @param  Array  $data Data of param
      * @return Mixed        Result of post
      */
-    public function post($url, $data = null)
+    public static function post($url, $data = null)
     {
         $cURL = curl_init($url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, TRUE);
