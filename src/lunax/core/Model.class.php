@@ -2,8 +2,7 @@
 
 abstract class Model
 {
-    # Local copy of PDO class
-    private $__PDO;
+    protected $pKey = 'id';
 
     # Vars SELECT
     private $_selectCols        = '*';
@@ -33,51 +32,6 @@ abstract class Model
         $this->dataWhere    = [];
         $this->paramWhere   = [];
         $this->param        = [];
-    }
-
-    /**
-     * Get configurations of file by direcory
-     */
-    private function getFileConfigDB($dir) {
-        $filename = implode([$dir, 'configs', 'database.json'], DS);
-        return file_exists($filename) ? $filename : false;
-    }
-
-    /**
-     * Get configurations of database
-     */
-    private function getConfigDB()
-    {
-        if (!$fileConfigs = $this->getFileConfigDB(APPDIR)) {
-            $fileConfigs = $this->getFileConfigDB(LUNAXDIR);
-        }
-
-        if ($fileConfigs) {
-            return json_decode(file_get_contents($fileConfigs));
-        } else {
-            Utils::error('Database configs not found');
-        }
-    }
-
-    private function execute($query)
-    {
-        $qPdo = $this->__PDO->prepare($query);
-
-        $param = json_encode($this->param);
-        $message = (
-            PHP_EOL . "Query: $query" .
-            PHP_EOL . "Param: $param" .
-            PHP_EOL . 'Status: '
-        );
-
-        if ($qPdo->execute($this->param)) {
-            Utils::log("$message Success!");
-        } else {
-            Utils::log("$message Error!");
-        }
-
-        $this->reset();
-        return $qPdo;
     }
 
     # Retorna as partes da query
@@ -241,7 +195,7 @@ abstract class Model
         }
 
         $strColumns =  implode($insert, ', ');
-        $this->execute(
+        $this->runQuery(
             "INSERT INTO `$this->table` ($strColumns) VALUES ($strValues)"
         );
         return $this->__PDO->lastInsertId();
@@ -268,14 +222,14 @@ abstract class Model
             }
         }
 
-        $this->execute(
+        $this->runQuery(
             "UPDATE `$this->table` SET $strUpdate " . $this->makeWhere()
         );
     }
 
     public function increment($col, $value)
     {
-        $this->execute(
+        $this->runQuery(
             "UPDATE `$this->table` SET `$col` = `$col` + $value" .
             $this->makeWhere()
         );
@@ -283,7 +237,7 @@ abstract class Model
 
     public function decrement($col, $value)
     {
-        $this->execute(
+        $this->runQuery(
             "UPDATE `$this->table` SET `$col` = `$col` - $value" .
             $this->makeWhere()
         );
@@ -293,9 +247,9 @@ abstract class Model
     public function delete($primaryKey = null)
     {
         if (!is_null($primaryKey)) {
-            $this->where('id = ?', $primaryKey);
+            $this->where("$this->pKey = ?", $primaryKey);
         }
-        $this->execute("DELETE FROM `$this->table`" . $this->makeWhere());
+        $this->runQuery("DELETE FROM `$this->table`" . $this->makeWhere());
     }
 
     public function select($columns)
@@ -384,7 +338,7 @@ abstract class Model
     public function fetch()
     {
         $this->limit(1);
-        $exec = $this->execute($this->prepareSelect());
+        $exec = $this->runQuery($this->prepareSelect());
         return $exec->fetch(PDO::FETCH_OBJ);
     }
 
@@ -393,7 +347,7 @@ abstract class Model
         if ($this->_selectLimitCount == 0) {
             $this->limit(null);
         }
-        $exec = $this->execute($this->prepareSelect());
+        $exec = $this->runQuery($this->prepareSelect());
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -403,7 +357,7 @@ abstract class Model
         $rtn = [];
 
         foreach ($args as $pk) {
-            $this->where('id = ?', $pk);
+            $this->where("$this->pKey = ?", $pk);
             array_push($rtn, $this->fetch());
         }
 
@@ -411,27 +365,15 @@ abstract class Model
         return func_num_args() > 1 ? $rtn : $rtn[0];
     }
 
-    function __construct()
+    private function runQuery($query)
     {
-        # Dados da configuração com o banco de dados
-        $dbConfig = $this->getConfigDB();
-
-        try {
-
-            $this->__PDO = new PDO(
-                'mysql:host=' .     $dbConfig->host .
-                ';dbname='    .     $dbConfig->db,
-                                    $dbConfig->user,
-                                    $dbConfig->pass
-            );
-
-        } catch (PDOException $e) {
-            Utils::error('Database connection failed: ' . $e->getMessage(), true);
-        }
+        $res = DBConnect::run($query, $this->param);
+        $this->reset();
+        return $res;
     }
 
-    function __destruct()
+    function __construct()
     {
-        $this->__PDO = null;
+        DBConnect::connect();
     }
 }

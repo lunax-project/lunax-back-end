@@ -19,6 +19,7 @@ class Utils
      */
     public static function now()
     {
+        date_default_timezone_set('America/Recife');
         return date("Y-m-d H:i:s");
     }
 
@@ -165,7 +166,7 @@ class Utils
      * Redirect browser to $url
      * @param  String $url
      */
-    public static function location($url)
+    public function location($url)
     {
         # Redirect browser
         header("Location: $url");
@@ -183,7 +184,7 @@ class Utils
      * @param  Array  $data Data of param
      * @return Mixed        Result of post
      */
-    public static function post($url, $data = null)
+    public function post($url, $data = null)
     {
         $cURL = curl_init($url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, TRUE);

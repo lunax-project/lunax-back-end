@@ -1,6 +1,6 @@
 {
-    "host":    "",
-    "db":      "",
-    "user":    "",
-    "pass":    ""
+    "host":    "localhost",
+    "db":      "tabi_db",
+    "user":    "inove",
+    "pass":    "golfgti1787#"
 }
