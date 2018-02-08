@@ -425,8 +425,8 @@ abstract class Model
                                     $dbConfig->pass
             );
 
-        } catch (Exception $e) {
-            Utils::error("Database not connected!\nDetails:\n$e");
+        } catch (PDOException $e) {
+            Utils::error('Database connection failed: ' . $e->getMessage(), true);
         }
     }
 
